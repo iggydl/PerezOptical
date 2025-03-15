@@ -9,12 +9,16 @@ import {
 } from 'react-native';
 import { Danger } from '../assets/components';
 import { formStyle } from '../styles/RegisterNLogin';
+import { useNavigation } from "@react-navigation/native";
+
 
 export default function LoginScreen() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
+  const navigation = useNavigation(); 
+
 
   const handleSubmit = async () => {
     setErrorMessage(""); 
@@ -44,8 +48,10 @@ export default function LoginScreen() {
             console.log("Parsed JSON Response:", data);
 
             if (response.ok) {
-                setErrorMessage("");
-                Alert.alert("Success", data.message);
+              setErrorMessage("");
+              Alert.alert("Success", data.message, [
+                  { text: "OK", onPress: () => navigation.navigate("Homepage") } 
+              ]);
             } else {
                 setErrorMessage(data.message);
             }
