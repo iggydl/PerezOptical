@@ -90,9 +90,7 @@ app.post('/register', async function (req, res) {
 });
 // Login Process
 app.post('/login', (req, res) => {
-    console.log("📩 Received POST /login request");
-
-    console.log("🔍 Raw Request Body:", req.body); 
+    
 
     if (!req.body || Object.keys(req.body).length === 0) {
         console.log("ERROR: Request body is empty or malformed");
@@ -101,8 +99,7 @@ app.post('/login', (req, res) => {
 
     const { email, password } = req.body;
     
-    console.log("🔍 Extracted Email:", email);
-    console.log("🔍 Extracted Password:", password);
+    
 
     if (!email || !password) {
         return res.status(400).json({ message: "All fields are required!" });

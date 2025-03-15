@@ -25,7 +25,7 @@ export default function LoginScreen() {
     }
 
 
-    console.log(" Sending Request:", JSON.stringify({ email, password }));
+   
 
     try {
         const response = await fetch("http://10.0.2.2:4548/login", {
@@ -41,7 +41,7 @@ export default function LoginScreen() {
 
         try {
             const data = JSON.parse(text);
-            console.log("✅ Parsed JSON Response:", data);
+            console.log("Parsed JSON Response:", data);
 
             if (response.ok) {
                 setErrorMessage("");
@@ -89,7 +89,7 @@ export default function LoginScreen() {
         </TouchableOpacity>
       </View>
 
-      {/* ✅ Show error messages */}
+      
       {errorMessage ? <Text style={{ color: "red", marginBottom: 10 }}>{errorMessage}</Text> : null}
 
       <Danger onPress={handleSubmit} title="LOGIN" textStyle={{ color: 'white' }} />
