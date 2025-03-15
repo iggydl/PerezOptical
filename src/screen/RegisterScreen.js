@@ -1,16 +1,18 @@
 import React, { useState } from 'react';
 import {
   ImageBackground,
+  Image,
   View,
   Text,
   TextInput,
   TouchableOpacity,
   StyleSheet,
-  CheckBox, // Import CheckBox from React Native
+   // Import CheckBox from React Native
 } from 'react-native';
 import { homeScreenStyle } from '../styles/styles'; // Assuming this is your style file
 import { Danger } from '../assets/components'; // Importing from index.js
 import { formStyle } from '../styles/RegisterNLogin';
+
 
 export default function RegisterScreen() {
   // State for form inputs
@@ -78,7 +80,7 @@ export default function RegisterScreen() {
         <View style={formStyle.formContainer}>
           {activeTab === 'register' && (
             <View style={formStyle.form}>
-              {/* Name Field with Label */}
+              {}
               <Text style={formStyle.label}>Name</Text>
               <TextInput
                 style={formStyle.input}
@@ -87,7 +89,7 @@ export default function RegisterScreen() {
                 onChangeText={(text) => setName(text)}
               />
 
-              {/* Email Field with Label */}
+              {}
               <Text style={formStyle.label}>Email</Text>
               <TextInput
                 style={formStyle.input}
@@ -103,19 +105,24 @@ export default function RegisterScreen() {
                 <TextInput
                   style={formStyle.input}
                   placeholder="Enter your password"
-                  secureTextEntry={!showPassword} // Toggle password visibility
+                  secureTextEntry={!showPassword} 
                   value={password}
                   onChangeText={(text) => setPassword(text)}
                 />
-                {/* CheckBox for Show/Hide Password */}
+                {}
                 <View style={formStyle.checkboxContainer}>
-                  <CheckBox
+                  <TouchableOpacity
                     value={showPassword}
-                    onValueChange={() => setShowPassword(!showPassword)} // Toggle password visibility
-                  />
-                  <Text style={formStyle.checkboxText}>
-                    {showPassword ? 'Hide Password' : 'Show Password'}
-                  </Text>
+                    onPress={() => setShowPassword(!showPassword)} 
+                  >
+                    <Image
+          source={
+            showPassword  ? require('../assets/img/closedeye.png') : require('../assets/img/openeye.png') 
+          }
+          style={{ width: 45, height: 45 }} 
+          
+        />
+        </TouchableOpacity>
                 </View>
               </View>
 
@@ -123,7 +130,7 @@ export default function RegisterScreen() {
               <Danger
                 onPress={handleSubmit}
                 title="GET STARTED"
-                textStyle={{ color: 'black' }} // Set text color to black
+                textStyle={{ color: 'black' }} 
               />
             </View>
           )}
@@ -150,19 +157,25 @@ export default function RegisterScreen() {
                   value={password}
                   onChangeText={(text) => setPassword(text)}
                 />
-                {/* CheckBox for Show/Hide Password */}
-                <View style={formStyle.checkboxContainer}>
-                  <CheckBox
+                {}
+                
+                  <TouchableOpacity
                     value={showPassword}
-                    onValueChange={() => setShowPassword(!showPassword)} // Toggle password visibility
-                  />
-                  <Text style={formStyle.checkboxText}>
-                    {showPassword ? 'Hide Password' : 'Show Password'}
-                  </Text>
-                </View>
+                    onPress={() => setShowPassword(!showPassword)} 
+                  >
+                  <Image
+          source={
+            showPassword  ? require('../assets/img/closedeye.png') : require('../assets/img/openeye.png') 
+          }
+          style={{ width: 45, height: 45 }} 
+      
+          
+        />
+                  </TouchableOpacity>
+               
               </View>
 
-              {/* Submit Button */}
+              {}
               <Danger
                 onPress={handleSubmit}
                 title="GET STARTED"

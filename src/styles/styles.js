@@ -20,10 +20,10 @@ export const homeScreenStyle = StyleSheet.create({
     backgroundColor: 'white', // Button background color
     paddingVertical: 10, // Vertical padding to make it more clickable
     paddingHorizontal: 20, // Horizontal padding for more width
-    borderRadius: 5,
-    width: '40%', // Set width to 80% of the screen to allow some margin
-    alignItems: 'center', // Center the text inside the button
-    justifyContent: 'center', // Center the text inside the button
+    borderRadius: 10,
+    width: '40%', 
+    alignItems: 'center', 
+    justifyContent: 'center', 
   },
   buttonText: {
     color: 'black', // Make text visible over background
@@ -40,7 +40,7 @@ export const homeScreenStyle2 = StyleSheet.create({
       alignSelf: 'center', // Center the button horizontally
       marginBottom: 15, // Add space between the buttons
       justifyContent: 'center', // Vertically center the text
-      alignItems: 'center', // Horizontally center the text
+      alignItems: 'center', 
     },
     buttonText: {
       color: 'black', // Set text color to black

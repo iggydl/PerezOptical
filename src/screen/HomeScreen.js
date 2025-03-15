@@ -10,14 +10,14 @@ export default function HomeScreen() {
   return (
     <ImageBackground
       source={require('../assets/img/bg.png')}
-      style={homeScreenStyle.backgroundImage} // Ensure the image fills the screen
+      style={homeScreenStyle.backgroundImage} 
     >
       <View style={homeScreenStyle.overlayContainer}>
-        {/* Using Button1 here */}
+        {}
         <Button1
-          onPress={() => navigation.navigate('HomeScreenTwo')} // Navigate to Homescreen2 on button press
+          onPress={() => navigation.navigate('HomeScreenTwo')} 
           title="GET STARTED"
-          textStyle={{ color: 'black' }} // Set text color to black
+          textStyle={{ color: 'black',borderRadius: 10 }} 
         />
       </View>
     </ImageBackground>

@@ -4,13 +4,13 @@ import { View, Image, StyleSheet } from "react-native";
 const SplashScreen = ({ navigation }) => {
   useEffect(() => {
     setTimeout(() => {
-      navigation.replace("HomeScreen"); // Navigate to the home screen after 3 seconds
+      navigation.replace("HomeScreen"); 
     }, 3000);
   }, []);
 
   return (
     <View style={styles.container}>
-      <Image source={require("../assets/img/bg.png")} style={styles.image} />
+      <Image source={require("../assets/img/logo.png")} style={styles.image} />
     </View>
   );
 };
@@ -20,10 +20,10 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
-    backgroundColor: "#000000", // Your theme color
+    backgroundColor: "#FFFFFF", 
   },
   image: {
-    width: '100%', // Adjust size
+    width: '100%', 
     height: '100%',
     resizeMode: "contain",
   },
