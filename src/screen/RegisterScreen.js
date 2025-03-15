@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useRoute } from '@react-navigation/native';
 import {
   ImageBackground,
   Image,
@@ -6,183 +7,139 @@ import {
   Text,
   TextInput,
   TouchableOpacity,
-  StyleSheet,
-   // Import CheckBox from React Native
+  Alert,
 } from 'react-native';
-import { homeScreenStyle } from '../styles/styles'; // Assuming this is your style file
-import { Danger } from '../assets/components'; // Importing from index.js
+import { homeScreenStyle } from '../styles/styles';
+import { Danger } from '../assets/components';
 import { formStyle } from '../styles/RegisterNLogin';
-
+import LoginScreen from './LoginScreen';
 
 export default function RegisterScreen() {
-  // State for form inputs
+  const route = useRoute();
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [activeTab, setActiveTab] = useState('');
+  const [errorMessage, setErrorMessage] = useState(''); 
 
-  // State to handle active tab (Login or Register)
-  const [activeTab, setActiveTab] = useState('register');
+  useEffect(() => {
+    if (route.params?.activeTab) {
+      setActiveTab(route.params.activeTab);
+    }
+  }, [route.params?.activeTab]);
 
-  // State to handle password visibility
   const [showPassword, setShowPassword] = useState(false);
 
-  const handleSubmit = () => {
-    // Handle form submission (for either register or login)
-    console.log('Name:', name);
-    console.log('Email:', email);
-    console.log('Password:', password);
-    // You can add logic here for form submission or validation
-  };
+  const handleSubmit = async () => {
+    setErrorMessage(""); 
+
+    
+    if (!name.trim() || !email.trim() || !password.trim()) {
+        setErrorMessage("All fields are required!");
+        return;
+    }
+
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+        setErrorMessage("Invalid email format!");
+        return;
+    }
+
+    const passwordRegex = /^(?=.*[A-Z])(?=.*\d).{6,}$/;
+    if (!passwordRegex.test(password)) {
+        setErrorMessage("Password must have at least 1 uppercase letter, 1 number, and be at least 6 characters long.");
+        return;
+    }
+
+  
+    console.log("Sending Request with Data:", JSON.stringify({ name, email, password }));
+
+    try {
+        const response = await fetch("http://10.0.2.2:4548/register", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ name, email, password }),
+        });
+
+        const data = await response.json();
+
+        console.log("Fetch Response:", response.status, data);
+
+        if (response.ok) {
+            setErrorMessage(""); 
+            Alert.alert("Success", data.message);
+        } else {
+            setErrorMessage(data.message); 
+        }
+    } catch (error) {
+        console.log("Network Request Failed:", error);
+        setErrorMessage("Failed to register. Try again.");
+    }
+};
+
 
   return (
-    <ImageBackground
-      source={require('../assets/img/bg.png')}
-      style={homeScreenStyle.backgroundImage} // Ensure the image fills the screen
-    >
+    <ImageBackground source={require('../assets/img/bg.png')} style={homeScreenStyle.backgroundImage}>
       <View style={formStyle.container}>
-        {/* Tabs for Login/Register */}
         <View style={formStyle.tabContainer}>
           <TouchableOpacity
-            style={[
-              formStyle.tabButton,
-              activeTab === 'login' && formStyle.activeTab,
-            ]}
+            style={[formStyle.tabButton, activeTab === 'login' && formStyle.activeTab]}
             onPress={() => setActiveTab('login')}
           >
-            <Text
-              style={[
-                formStyle.tabText,
-                activeTab === 'login' && formStyle.activeTabText,
-              ]}
-            >
-              LOGIN
-            </Text>
+            <Text style={[formStyle.tabText, activeTab === 'login' && formStyle.activeTabText]}>LOGIN</Text>
           </TouchableOpacity>
           <TouchableOpacity
-            style={[
-              formStyle.tabButton,
-              activeTab === 'register' && formStyle.activeTab,
-            ]}
+            style={[formStyle.tabButton, activeTab === 'register' && formStyle.activeTab]}
             onPress={() => setActiveTab('register')}
           >
-            <Text
-              style={[
-                formStyle.tabText,
-                activeTab === 'register' && formStyle.activeTabText,
-              ]}
-            >
-              REGISTER
-            </Text>
+            <Text style={[formStyle.tabText, activeTab === 'register' && formStyle.activeTabText]}>REGISTER</Text>
           </TouchableOpacity>
         </View>
 
-        {/* Form */}
         <View style={formStyle.formContainer}>
           {activeTab === 'register' && (
             <View style={formStyle.form}>
-              {}
-              <Text style={formStyle.label}>Name</Text>
-              <TextInput
-                style={formStyle.input}
-                placeholder="Enter your name"
-                value={name}
-                onChangeText={(text) => setName(text)}
-              />
+              <Text style={formStyle.label}>Username</Text>
+              <TextInput style={formStyle.input} placeholder="Enter your username" value={name} onChangeText={setName} />
 
-              {}
               <Text style={formStyle.label}>Email</Text>
               <TextInput
                 style={formStyle.input}
                 placeholder="Enter your email"
                 keyboardType="email-address"
                 value={email}
-                onChangeText={(text) => setEmail(text)}
+                onChangeText={setEmail}
               />
 
-              {/* Password Field with Label */}
               <Text style={formStyle.label}>Password</Text>
               <View style={formStyle.passwordContainer}>
                 <TextInput
                   style={formStyle.input}
                   placeholder="Enter your password"
-                  secureTextEntry={!showPassword} 
+                  secureTextEntry={!showPassword}
                   value={password}
-                  onChangeText={(text) => setPassword(text)}
+                  onChangeText={setPassword}
                 />
-                {}
                 <View style={formStyle.checkboxContainer}>
-                  <TouchableOpacity
-                    value={showPassword}
-                    onPress={() => setShowPassword(!showPassword)} 
-                  >
+                  <TouchableOpacity value={showPassword} onPress={() => setShowPassword(!showPassword)}>
                     <Image
-          source={
-            showPassword  ? require('../assets/img/closedeye.png') : require('../assets/img/openeye.png') 
-          }
-          style={{ width: 45, height: 45 }} 
-          
-        />
-        </TouchableOpacity>
+                      source={showPassword ? require('../assets/img/closedeye.png') : require('../assets/img/openeye.png')}
+                      style={{ width: 45, height: 45 }}
+                    />
+                  </TouchableOpacity>
                 </View>
               </View>
 
-              {/* Submit Button */}
-              <Danger
-                onPress={handleSubmit}
-                title="GET STARTED"
-                textStyle={{ color: 'black' }} 
-              />
+            
+              {errorMessage ? <Text style={{ color: "red", marginBottom: 10 }}>{errorMessage}</Text> : null}
+
+              <Danger onPress={handleSubmit} title="REGISTER" textStyle={{ color: 'black' }} />
             </View>
           )}
 
-          {activeTab === 'login' && (
-            <View style={formStyle.form}>
-              {/* Email Field with Label for Login */}
-              <Text style={formStyle.label}>Email</Text>
-              <TextInput
-                style={formStyle.input}
-                placeholder="Enter your email"
-                keyboardType="email-address"
-                value={email}
-                onChangeText={(text) => setEmail(text)}
-              />
-
-              {/* Password Field with Label for Login */}
-              <Text style={formStyle.label}>Password</Text>
-              <View style={formStyle.passwordContainer}>
-                <TextInput
-                  style={formStyle.input}
-                  placeholder="Enter your password"
-                  secureTextEntry={!showPassword} // Toggle password visibility
-                  value={password}
-                  onChangeText={(text) => setPassword(text)}
-                />
-                {}
-                
-                  <TouchableOpacity
-                    value={showPassword}
-                    onPress={() => setShowPassword(!showPassword)} 
-                  >
-                  <Image
-          source={
-            showPassword  ? require('../assets/img/closedeye.png') : require('../assets/img/openeye.png') 
-          }
-          style={{ width: 45, height: 45 }} 
-      
-          
-        />
-                  </TouchableOpacity>
-               
-              </View>
-
-              {}
-              <Danger
-                onPress={handleSubmit}
-                title="GET STARTED"
-                textStyle={{ color: 'white' }} // Set text color to black
-              />
-            </View>
-          )}
+          {activeTab === 'login' && <LoginScreen />}
         </View>
       </View>
     </ImageBackground>
