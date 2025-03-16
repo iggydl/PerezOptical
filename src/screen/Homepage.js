@@ -148,10 +148,12 @@ const styles = StyleSheet.create({
   categoryButton: {
     paddingVertical: 8,
     paddingHorizontal: 15,
+    width: 110,
     borderWidth: 1,
     borderColor: "black",
     borderRadius: 20,
-    marginHorizontal: 5,
+    marginHorizontal: 10,
+   
   },
   activeCategory: {
     backgroundColor: "red",
@@ -159,6 +161,7 @@ const styles = StyleSheet.create({
   },
   categoryText: {
     color: "black",
+    textAlign: "center",
   },
   activeText: {
     color: "white",
@@ -199,7 +202,6 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-around",
     paddingVertical: 10,
-    borderTopWidth: 1,
     borderTopColor: "#ddd",
     position: "absolute",
     bottom: 0,
