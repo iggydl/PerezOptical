@@ -9,12 +9,14 @@ import {
 } from 'react-native';
 import { Danger } from '../assets/components';
 import { formStyle } from '../styles/RegisterNLogin';
+import { useNavigation } from '@react-navigation/native';
 
 export default function LoginScreen({ registeredEmail, registeredPassword }) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
+  const navigation = useNavigation();
 
   const handleSubmit = () => {
     setErrorMessage("");
@@ -25,7 +27,9 @@ export default function LoginScreen({ registeredEmail, registeredPassword }) {
     }
 
     if (email === registeredEmail && password === registeredPassword) {
-      Alert.alert("Success", "Login successful!");
+      Alert.alert("Success", "Login successful!", [
+        { text: "OK", onPress: () => navigation.navigate("Homepage") }
+      ]);
     } else {
       setErrorMessage("Invalid email or password.");
     }
