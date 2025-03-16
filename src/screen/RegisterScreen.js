@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useRoute } from '@react-navigation/native';
+import { useRoute, useNavigation } from '@react-navigation/native';
 import {
   ImageBackground,
   Image,
@@ -16,11 +16,14 @@ import LoginScreen from './LoginScreen';
 
 export default function RegisterScreen() {
   const route = useRoute();
+  const navigation = useNavigation();
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [activeTab, setActiveTab] = useState('');
+  const [activeTab, setActiveTab] = useState('register');
   const [errorMessage, setErrorMessage] = useState(''); 
+  const [registeredEmail, setRegisteredEmail] = useState('');
+  const [registeredPassword, setRegisteredPassword] = useState('');
 
   useEffect(() => {
     if (route.params?.activeTab) {
@@ -30,10 +33,9 @@ export default function RegisterScreen() {
 
   const [showPassword, setShowPassword] = useState(false);
 
-  const handleSubmit = async () => {
+  const handleSubmit = () => {
     setErrorMessage(""); 
 
-    
     if (!name.trim() || !email.trim() || !password.trim()) {
         setErrorMessage("All fields are required!");
         return;
@@ -51,34 +53,12 @@ export default function RegisterScreen() {
         return;
     }
 
-  
-    console.log("Sending Request with Data:", JSON.stringify({ name, email, password }));
-
-    try {
-        const response = await fetch("http://10.0.2.2:4548/register", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify({ name, email, password }),
-        });
-
-        const data = await response.json();
-
-        console.log("Fetch Response:", response.status, data);
-
-        if (response.ok) {
-            setErrorMessage(""); 
-            Alert.alert("Success", data.message);
-        } else {
-            setErrorMessage(data.message); 
-        }
-    } catch (error) {
-        console.log("Network Request Failed:", error);
-        setErrorMessage("Failed to register. Try again.");
-    }
-};
-
+    setRegisteredEmail(email);
+    setRegisteredPassword(password);
+    Alert.alert("Success", "Registration successful (static flow)!", [
+      { text: "OK", onPress: () => setActiveTab('login') }
+    ]);
+  };
 
   return (
     <ImageBackground source={require('../assets/img/bg.png')} style={homeScreenStyle.backgroundImage}>
@@ -123,7 +103,7 @@ export default function RegisterScreen() {
                   onChangeText={setPassword}
                 />
                 <View style={formStyle.checkboxContainer}>
-                  <TouchableOpacity value={showPassword} onPress={() => setShowPassword(!showPassword)}>
+                  <TouchableOpacity onPress={() => setShowPassword(!showPassword)}>
                     <Image
                       source={showPassword ? require('../assets/img/closedeye.png') : require('../assets/img/openeye.png')}
                       style={{ width: 45, height: 45 }}
@@ -132,14 +112,15 @@ export default function RegisterScreen() {
                 </View>
               </View>
 
-            
               {errorMessage ? <Text style={{ color: "red", marginBottom: 10 }}>{errorMessage}</Text> : null}
 
               <Danger onPress={handleSubmit} title="REGISTER" textStyle={{ color: 'black' }} />
             </View>
           )}
 
-          {activeTab === 'login' && <LoginScreen />}
+          {activeTab === 'login' && (
+            <LoginScreen registeredEmail={registeredEmail} registeredPassword={registeredPassword} />
+          )}
         </View>
       </View>
     </ImageBackground>

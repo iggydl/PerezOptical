@@ -9,63 +9,27 @@ import {
 } from 'react-native';
 import { Danger } from '../assets/components';
 import { formStyle } from '../styles/RegisterNLogin';
-import { useNavigation } from "@react-navigation/native";
 
-
-export default function LoginScreen() {
+export default function LoginScreen({ registeredEmail, registeredPassword }) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
-  const navigation = useNavigation(); 
 
-
-  const handleSubmit = async () => {
-    setErrorMessage(""); 
+  const handleSubmit = () => {
+    setErrorMessage("");
 
     if (!email.trim() || !password.trim()) {
         setErrorMessage("All fields are required!");
         return;
     }
 
-
-   
-
-    try {
-        const response = await fetch("http://10.0.2.2:4548/login", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify({ email, password }), 
-        });
-
-        const text = await response.text();
-        console.log("📩 Server Response (Raw):", text);
-
-        try {
-            const data = JSON.parse(text);
-            console.log("Parsed JSON Response:", data);
-
-            if (response.ok) {
-              setErrorMessage("");
-              Alert.alert("Success", data.message, [
-                  { text: "OK", onPress: () => navigation.navigate("Homepage") } 
-              ]);
-            } else {
-                setErrorMessage(data.message);
-            }
-        } catch (error) {
-            console.log("JSON Parse Error:", error);
-            setErrorMessage("Server returned an invalid response.");
-        }
-    } catch (error) {
-        console.log("Network Request Failed:", error);
-        setErrorMessage("Failed to connect to the server. Please try again.");
+    if (email === registeredEmail && password === registeredPassword) {
+      Alert.alert("Success", "Login successful!");
+    } else {
+      setErrorMessage("Invalid email or password.");
     }
-};
-
-
+  };
 
   return (
     <View style={formStyle.form}>
@@ -95,7 +59,6 @@ export default function LoginScreen() {
         </TouchableOpacity>
       </View>
 
-      
       {errorMessage ? <Text style={{ color: "red", marginBottom: 10 }}>{errorMessage}</Text> : null}
 
       <Danger onPress={handleSubmit} title="LOGIN" textStyle={{ color: 'white' }} />
