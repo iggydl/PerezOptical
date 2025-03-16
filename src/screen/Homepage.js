@@ -16,14 +16,25 @@ export default function HomepageScreen() {
  
       <View style={styles.header}>
         <View style={styles.searchContainer}>
-          <Text style={styles.searchIcon}>🔍</Text> 
+        <Image
+                    source={require('../assets/img/search.png')}
+                    style={{ width: 32, height: 32 }}
+                  /> 
           <TextInput style={styles.searchInput} placeholder="Search" />
         </View>
         <TouchableOpacity>
-          <Text style={styles.iconText}>Profile</Text>
+        <Image
+                    source={require('../assets/img/profile.png')}
+                    style={{ width: 45, height: 45 }}
+                  />
+          
         </TouchableOpacity>
         <TouchableOpacity>
-          <Text style={styles.iconText}>Menu</Text>
+        <Image
+                    source={require('../assets/img/menu.png')}
+                    style={{ width: 45, height: 45 }}
+                  />
+         
         </TouchableOpacity>
       </View>
 
@@ -66,13 +77,23 @@ export default function HomepageScreen() {
      
       <View style={styles.bottomNav}>
         <TouchableOpacity>
-          <Text style={styles.navText}>Home</Text>
+        <Image
+                    source={require('../assets/img/home.png')}
+                    style={{ width: 45, height: 45 }}
+                  />
+          
         </TouchableOpacity>
         <TouchableOpacity>
-          <Text style={styles.navText}>Favorites</Text>
+        <Image
+                    source={require('../assets/img/heart.png')}
+                    style={{ width: 45, height: 45 }}
+                  />
         </TouchableOpacity>
         <TouchableOpacity>
-          <Text style={styles.navText}>Cart</Text>
+        <Image
+                    source={require('../assets/img/cart.png')}
+                    style={{ width: 45, height: 45 }}
+                  />
         </TouchableOpacity>
       </View>
       
