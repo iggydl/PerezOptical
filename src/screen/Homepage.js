@@ -1,8 +1,9 @@
 import React, { useState } from "react";
 import { View, Text, TextInput, Image, TouchableOpacity, FlatList, StyleSheet } from "react-native";
-
+import { useNavigation } from '@react-navigation/native';
 export default function HomepageScreen() {
   const [selectedCategory, setSelectedCategory] = useState("MENS");
+  const navigation = useNavigation();
 
   const categories = ["MENS", "WOMENS", "KIDS"];
   const products = [
@@ -22,13 +23,12 @@ export default function HomepageScreen() {
                   /> 
           <TextInput style={styles.searchInput} placeholder="Search" />
         </View>
-        <TouchableOpacity>
-        <Image
-                    source={require('../assets/img/profile.png')}
-                    style={{ width: 45, height: 45 }}
-                  />
-          
-        </TouchableOpacity>
+        <TouchableOpacity onPress={() => navigation.navigate("Profile")}>
+  <Image
+    source={require('../assets/img/profile.png')}
+    style={{ width: 45, height: 45 }}
+  />
+</TouchableOpacity>
         <TouchableOpacity>
         <Image
                     source={require('../assets/img/menu.png')}

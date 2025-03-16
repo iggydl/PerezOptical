@@ -55,7 +55,7 @@ export default function RegisterScreen() {
 
     setRegisteredEmail(email);
     setRegisteredPassword(password);
-    Alert.alert("Success", "Registration successful (static flow)!", [
+    Alert.alert("Success", "Registration successful ", [
       { text: "OK", onPress: () => setActiveTab('login') }
     ]);
   };
