@@ -26,7 +26,7 @@ export const homeScreenStyle = StyleSheet.create({
     justifyContent: 'center', 
   },
   buttonText: {
-    color: 'black', // Make text visible over background
+    color: 'black', 
     fontSize: 18,
     fontWeight: 'bold',
   },
@@ -34,17 +34,17 @@ export const homeScreenStyle = StyleSheet.create({
 
 export const homeScreenStyle2 = StyleSheet.create({
     button: {
-      width: '80%', // Set the button width to 80% of the container's width
-      paddingVertical: 12, // Vertical padding inside button
-      borderRadius: 5, // Rounded corners for the button
-      alignSelf: 'center', // Center the button horizontally
-      marginBottom: 15, // Add space between the buttons
-      justifyContent: 'center', // Vertically center the text
+      width: '80%', 
+      paddingVertical: 12,
+      borderRadius: 5, 
+      alignSelf: 'center', 
+      marginBottom: 15, 
+      justifyContent: 'center', 
       alignItems: 'center', 
     },
     buttonText: {
-      color: 'black', // Set text color to black
-      fontSize: 16, // Set font size for the button text
-      fontWeight: 'bold', // Bold text
+      color: 'black', 
+      fontSize: 16, 
+      fontWeight: 'bold', 
     },
   });

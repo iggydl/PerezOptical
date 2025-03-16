@@ -21,9 +21,16 @@ export default function LoginScreen({ registeredEmail, registeredPassword }) {
   const handleSubmit = () => {
     setErrorMessage("");
 
-    if (!email.trim() || !password.trim()) {
+    if (!email.trim() && !password.trim()) {
         setErrorMessage("All fields are required!");
         return;
+    }else if (!email.trim()){
+      setErrorMessage("Please enter your email");
+      return;
+    }
+    else if (!password.trim()){
+      setErrorMessage("Please enter your password");
+      return;
     }
 
     if (email === registeredEmail && password === registeredPassword) {
