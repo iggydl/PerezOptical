@@ -25,6 +25,7 @@ export default function RegisterScreen() {
   const [errorMessage, setErrorMessage] = useState(''); 
   const [registeredEmail, setRegisteredEmail] = useState('');
   const [registeredPassword, setRegisteredPassword] = useState('');
+  const [registeredUsername, setRegisteredUsername] = useState('');
 
   useEffect(() => {
     if (route.params?.activeTab) {
@@ -73,7 +74,7 @@ export default function RegisterScreen() {
       setErrorMessage("Passwords do not match. Please enter the same password!");
         return;
     }
-
+    setRegisteredUsername(name);
     setRegisteredEmail(email);
     setRegisteredPassword(password);
     Alert.alert("Success", "Registration successful ", [
@@ -150,7 +151,7 @@ export default function RegisterScreen() {
           )}
 
           {activeTab === 'login' && (
-            <LoginScreen registeredEmail={registeredEmail} registeredPassword={registeredPassword} />
+            <LoginScreen registeredUsername={registeredUsername} registeredEmail={registeredEmail} registeredPassword={registeredPassword} />
           )}
         </View>
       </View>

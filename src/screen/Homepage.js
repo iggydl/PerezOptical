@@ -9,6 +9,7 @@ export default function HomepageScreen() {
   const products = [
     { id: "1", name: "Viseo VS220954", price: "₱139.00", image: require("../assets/img/glasses.jpg") },
     { id: "2", name: "Viseo VS320954", price: "₱179.00", image: require("../assets/img/glasses.jpg") },
+    { id: "3", name: "Viseo VS320954", price: "₱179.00", image: require("../assets/img/glasses.jpg") },
   ];
 
   return (
@@ -177,6 +178,7 @@ const styles = StyleSheet.create({
   },
   productCard: {
     backgroundColor: "white",
+    height: 200,
     padding: 10,
     borderRadius: 10,
     alignItems: "center",

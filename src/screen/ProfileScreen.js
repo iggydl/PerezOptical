@@ -1,11 +1,19 @@
-import React from 'react';
-import { View, Text, Image, TouchableOpacity } from 'react-native';
+import React, { useContext } from 'react';
+import { View, Text, Image, TouchableOpacity,Alert } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { StyleSheet } from 'react-native';
-import { ImageBackground } from 'react-native';
+import { UserContext } from './UserContext'; 
 
 export default function ProfileScreen() {
   const navigation = useNavigation();
+  const { user, setUser } = useContext(UserContext); 
+
+  const handleLogout = () => {
+    setUser(null); 
+    Alert.alert("Success", "Logout successfully!", [
+          { text: "OK", onPress: () => navigation.navigate("RegisterScreen") }
+        ]);
+  };
 
   return (
     <View style={styles.container}>
@@ -14,14 +22,18 @@ export default function ProfileScreen() {
           <Text style={styles.icon}>&#8592;</Text>
         </TouchableOpacity>
         <Text style={styles.title}>MY PROFILE</Text>
-        <TouchableOpacity>
-          <Text style={styles.icon}>&#9998;</Text>
+        <TouchableOpacity onPress={() => navigation.navigate("EditProfile")}>
+        <Image source={require('../assets/img/edit.png')}  />
         </TouchableOpacity>
       </View>
 
       <View style={styles.profileSection}>
-        <Image source={{ uri: 'https://static-00.iconduck.com/assets.00/profile-circle-icon-1023x1024-ucnnjrj1.png' }} style={styles.profileImage} />
-        <Text style={styles.profileName}>Iggy</Text>
+        <Image 
+          source={{ uri: 'https://static-00.iconduck.com/assets.00/profile-circle-icon-1023x1024-ucnnjrj1.png' }} 
+          style={styles.profileImage} 
+        />
+        <Text style={styles.profileName}>{user ? user.username : "Guest"}</Text>
+       
       </View>
 
       <View style={styles.cardContainer}>
@@ -32,6 +44,14 @@ export default function ProfileScreen() {
         <TouchableOpacity style={styles.card}>
           <Text style={styles.cardIcon}>❤️</Text>
           <Text style={styles.cardText}>Favorites</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.card}>
+          <Text style={styles.cardIcon}>📅</Text>
+          <Text style={styles.cardText}>Appointments</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.card} onPress={handleLogout}>
+          <Image source={require('../assets/img/logout1.png')} style={{ width: 45, height: 45 }} />
+          <Text style={styles.cardText}>Logout</Text>
         </TouchableOpacity>
       </View>
     </View>
@@ -77,6 +97,11 @@ const styles = StyleSheet.create({
     color: 'white',
     marginTop: 10,
   },
+  profileEmail: {
+    fontSize: 14,
+    color: 'white',
+    marginTop: 5,
+  },
   cardContainer: {
     backgroundColor: 'white',
     borderTopLeftRadius: 30,
@@ -85,12 +110,16 @@ const styles = StyleSheet.create({
     padding: 20,
     flexDirection: 'row',
     justifyContent: 'space-around',
+    flexWrap: 'wrap',
+    height: 600,
   },
   card: {
     backgroundColor: '#D24D57',
     padding: 20,
     borderRadius: 10,
     alignItems: 'center',
+    width: 150,
+    marginTop: 20,
   },
   cardIcon: {
     fontSize: 30,

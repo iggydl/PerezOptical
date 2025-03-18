@@ -8,11 +8,14 @@ import RegisterScreen from './src/screen/RegisterScreen';
 import LoginScreen from './src/screen/LoginScreen';
 import HomepageScreen from './src/screen/Homepage';
 import ProfileScreen from './src/screen/ProfileScreen';
+import EditProfileScreen from './src/screen/EditProfileScreen';
+import { UserProvider } from './src/screen/UserContext';
 
 const Stack = createStackNavigator();
 
 export default function App() {
   return (
+    <UserProvider>
     <NavigationContainer>
       <Stack.Navigator screenOptions={{headerShown: false}}>
         <Stack.Screen name="Splash" component={SplashScreen} />
@@ -22,7 +25,9 @@ export default function App() {
         <Stack.Screen name="LoginScreen" component={LoginScreen}/>
         <Stack.Screen name="Homepage" component={HomepageScreen}/>
         <Stack.Screen name="Profile" component={ProfileScreen}/>
+        <Stack.Screen name="EditProfile" component={EditProfileScreen}/>
       </Stack.Navigator>
     </NavigationContainer>
+    </UserProvider>
   );
 }

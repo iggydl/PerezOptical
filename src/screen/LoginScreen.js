@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState,useContext } from 'react';
 import {
   View,
   Text,
@@ -10,13 +10,18 @@ import {
 import { Danger } from '../assets/components';
 import { formStyle } from '../styles/RegisterNLogin';
 import { useNavigation } from '@react-navigation/native';
+import { UserContext } from './UserContext';
 
-export default function LoginScreen({ registeredEmail, registeredPassword }) {
+export default function LoginScreen({ registeredUsername ,registeredEmail, registeredPassword }) {
+  
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
   const navigation = useNavigation();
+  const adminemail = "admin123@gmail.com";
+  const adminpass = "123A123"
+  const { setUser } = useContext(UserContext);
 
   const handleSubmit = () => {
     setErrorMessage("");
@@ -34,12 +39,26 @@ export default function LoginScreen({ registeredEmail, registeredPassword }) {
     }
 
     if (email === registeredEmail && password === registeredPassword) {
-      Alert.alert("Success", "Login successful!", [
-        { text: "OK", onPress: () => navigation.navigate("Homepage") }
-      ]);
+      user = {
+        username: registeredUsername,
+        email: registeredEmail,
+        password: registeredPassword,
+      };
+    } else if (email === adminemail && password === adminpass) {
+      user = {
+        username: "Admin",
+        email: adminemail,
+        password: adminpass,
+      };
     } else {
       setErrorMessage("Invalid email or password.");
+      return;
     }
+
+    setUser(user); 
+    Alert.alert("Success", "Login successful!", [
+      { text: "OK", onPress: () => navigation.navigate("Homepage") }
+    ]);
   };
 
   return (
