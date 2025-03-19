@@ -44,21 +44,27 @@ export default function LoginScreen({ registeredUsername ,registeredEmail, regis
         email: registeredEmail,
         password: registeredPassword,
       };
+      setUser(user); 
+    Alert.alert("Success", "Login successful!", [
+      { text: "OK", onPress: () => navigation.navigate("Homepage") }
+    ]);
     } else if (email === adminemail && password === adminpass) {
       user = {
         username: "Admin",
         email: adminemail,
         password: adminpass,
       };
+        Alert.alert("Success", "Login successful!", [
+          { text: "OK", onPress: () => navigation.navigate("Dashboard") }
+        ]);
+     
+      
     } else {
       setErrorMessage("Invalid email or password.");
       return;
     }
 
-    setUser(user); 
-    Alert.alert("Success", "Login successful!", [
-      { text: "OK", onPress: () => navigation.navigate("Homepage") }
-    ]);
+    
   };
 
   return (

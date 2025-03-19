@@ -10,6 +10,8 @@ import HomepageScreen from './src/screen/Homepage';
 import ProfileScreen from './src/screen/ProfileScreen';
 import EditProfileScreen from './src/screen/EditProfileScreen';
 import { UserProvider } from './src/screen/UserContext';
+import DashboardScreen from './src/screen/AdminDbScreen';
+
 
 const Stack = createStackNavigator();
 
@@ -26,6 +28,8 @@ export default function App() {
         <Stack.Screen name="Homepage" component={HomepageScreen}/>
         <Stack.Screen name="Profile" component={ProfileScreen}/>
         <Stack.Screen name="EditProfile" component={EditProfileScreen}/>
+        <Stack.Screen name="Dashboard" component={DashboardScreen}/>
+       
       </Stack.Navigator>
     </NavigationContainer>
     </UserProvider>
