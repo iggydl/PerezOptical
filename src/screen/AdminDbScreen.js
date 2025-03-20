@@ -26,6 +26,27 @@ export default function DashboardScreen() {
       useNativeDriver: true,
     }).start(() => setIsMenuVisible(false));
   };
+  const [selectedPeriod, setSelectedPeriod] = useState("daily");
+
+// Chart data for different timeframes
+const chartData = {
+  daily: {
+    labels: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
+    data: [50000, 48000, 52000, 51000, 49000, 47000, 45000],
+  },
+  weekly: {
+    labels: ["Week 1", "Week 2", "Week 3", "Week 4"],
+    data: [200000, 190000, 210000, 195000],
+  },
+  monthly: {
+    labels: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul"],
+    data: [900000, 850000, 950000, 920000, 880000, 870000, 860000],
+  },
+  yearly: {
+    labels: ["2019", "2020", "2021", "2022", "2023", "2024", "2025"],
+    data: [10000000, 9500000, 11000000, 10800000, 10700000, 11500000, 12000000],
+  },
+};
 
   return (
     <View style={styles.container}>
@@ -107,27 +128,51 @@ export default function DashboardScreen() {
           </View>
         </View>
 
-        {/* 🔹 Sales Chart */}
         <View style={styles.card}>
-          <Text style={styles.sectionTitle}>Sales and Purchase</Text>
-          <BarChart
-            data={{
-              labels: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
-              datasets: [{ data: [50000, 48000, 52000, 51000, 49000, 47000, 45000] }],
-            }}
-            width={screenWidth - 40}
-            height={220}
-            yAxisLabel="₱"
-            chartConfig={{
-              backgroundColor: "#fff",
-              backgroundGradientFrom: "#fff",
-              backgroundGradientTo: "#fff",
-              color: () => `#D24D57`,
-              decimalPlaces: 0,
-            }}
-            style={styles.chart}
-          />
-        </View>
+  <Text style={styles.sectionTitle}>Sales and Purchase</Text>
+
+  {/* 🔹 Chart Filter Buttons */}
+  <View style={styles.filterRow}>
+    {["daily", "weekly", "monthly", "yearly"].map((period) => (
+      <TouchableOpacity
+        key={period}
+        style={[
+          styles.filterButton,
+          selectedPeriod === period && styles.activeFilterButton,
+        ]}
+        onPress={() => setSelectedPeriod(period)}
+      >
+        <Text
+          style={[
+            styles.filterText,
+            selectedPeriod === period && styles.activeFilterText,
+          ]}
+        >
+          {period.charAt(0).toUpperCase() + period.slice(1)}
+        </Text>
+      </TouchableOpacity>
+    ))}
+  </View>
+
+  {/* 🔹 Bar Chart */}
+  <BarChart
+    data={{
+      labels: chartData[selectedPeriod].labels,
+      datasets: [{ data: chartData[selectedPeriod].data }],
+    }}
+    width={screenWidth - 40}
+    height={220}
+    yAxisLabel="₱ "
+    chartConfig={{
+      backgroundColor: "#fff",
+      backgroundGradientFrom: "#fff",
+      backgroundGradientTo: "#fff",
+      color: () => `#D24D57`,
+      decimalPlaces: 0,
+    }}
+    style={styles.chart}
+  />
+</View>;
 
         {/* 🔹 Stock Summaries (Restored) */}
         <View style={styles.card}>
@@ -219,6 +264,28 @@ const styles = StyleSheet.create({
     position: 'absolute',
     bottom: 20,
     width: '100%',
+  },
+  filterRow: {
+    flexDirection: "row",
+    justifyContent: "space-around",
+    marginBottom: 10,
+  },
+  filterButton: {
+    paddingVertical: 8,
+    paddingHorizontal: 15,
+    borderRadius: 10,
+    backgroundColor: "#e0e0e0",
+  },
+  activeFilterButton: {
+    backgroundColor: "#D24D57",
+  },
+  filterText: {
+    fontSize: 14,
+    color: "#333",
+  },
+  activeFilterText: {
+    color: "#fff",
+    fontWeight: "bold",
   },
 
   // 🔹 Header
