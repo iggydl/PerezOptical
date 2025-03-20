@@ -1,12 +1,20 @@
 import React, { useState, useRef } from 'react';
-import { View, Text, Image, TouchableOpacity, ScrollView, StyleSheet, Dimensions, Animated } from 'react-native';
+import { View, Text, Image, TouchableOpacity, ScrollView, StyleSheet, Dimensions, Animated,Alert } from 'react-native';
 import { BarChart } from 'react-native-chart-kit';
+import { useNavigation } from '@react-navigation/native';
 
-const screenWidth = Dimensions.get("window").width;
 
 export default function DashboardScreen() {
+  const screenWidth = Dimensions.get("window").width;
+  const navigation = useNavigation();
   const [isMenuVisible, setIsMenuVisible] = useState(false);
   const slideAnim = useRef(new Animated.Value(-250)).current; 
+const handleLogout = () => {
+   
+    Alert.alert("Success", "Logout successfully!", [
+          { text: "OK", onPress: () => navigation.navigate("RegisterScreen") }
+        ]);
+  };
 
   // Open Side Menu
   const openMenu = () => {
@@ -36,7 +44,7 @@ const chartData = {
   },
   weekly: {
     labels: ["Week 1", "Week 2", "Week 3", "Week 4"],
-    data: [200000, 190000, 210000, 195000],
+    data: [100000,150000,200000,300000],
   },
   monthly: {
     labels: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul"],
@@ -44,7 +52,7 @@ const chartData = {
   },
   yearly: {
     labels: ["2019", "2020", "2021", "2022", "2023", "2024", "2025"],
-    data: [10000000, 9500000, 11000000, 10800000, 10700000, 11500000, 12000000],
+    data: [900000, 850000, 950000, 920000, 880000, 870000, 860000],
   },
 };
 
@@ -67,13 +75,13 @@ const chartData = {
         <TouchableOpacity style={[styles.menuItem, styles.activeMenuItem]}>
           <Text style={styles.activeMenuText}>🏠 Dashboard</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.menuItem}>
+        <TouchableOpacity onPress={() => navigation.navigate("Inventory")} style={styles.menuItem}>
           <Text style={styles.menuText}>📦 Inventory</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.menuItem}>
+        <TouchableOpacity onPress={() => navigation.navigate("Orders")} style={styles.menuItem}>
           <Text style={styles.menuText}>🛒 Orders</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.menuItem}>
+        <TouchableOpacity onPress={() => navigation.navigate("Appointment")} style={styles.menuItem}>
           <Text style={styles.menuText}>📅 Appointment</Text>
         </TouchableOpacity>
 
@@ -82,7 +90,7 @@ const chartData = {
           <TouchableOpacity style={styles.menuItem}>
             <Text style={styles.menuText}>⚙️ Settings</Text>
           </TouchableOpacity>
-          <TouchableOpacity style={styles.menuItem}>
+          <TouchableOpacity onPress={handleLogout} style={styles.menuItem}>
             <Text style={styles.menuText}>🚪 Log Out</Text>
           </TouchableOpacity>
         </View>
@@ -112,6 +120,14 @@ const chartData = {
               <Image source={require('../assets/img/search.png')} style={styles.smallIcon} />
               <Text>Profit: ₱20,000</Text>
             </TouchableOpacity>
+            <TouchableOpacity style={styles.statCard}>
+              <Image source={require('../assets/img/search.png')} style={styles.smallIcon} />
+              <Text>Profit: ₱20,000</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.statCard}>
+              <Image source={require('../assets/img/search.png')} style={styles.smallIcon} />
+              <Text>Profit: ₱20,000</Text>
+            </TouchableOpacity>
           </View>
         </View>
 
@@ -119,12 +135,12 @@ const chartData = {
         <View style={styles.card}>
           <Text style={styles.sectionTitle}>Appointment Overview</Text>
           <View style={styles.row}>
-            <TouchableOpacity style={styles.statCard}>
-              <Text>📅 All: 20</Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.statCard}>
-              <Text>⭐ New: 5</Text>
-            </TouchableOpacity>
+            
+              <Text style={styles.statCard}>📅 All: 20</Text>
+            
+            
+              <Text style={styles.statCard}>⭐ New: 5</Text>
+            
           </View>
         </View>
 
@@ -174,7 +190,7 @@ const chartData = {
   />
 </View>;
 
-        {/* 🔹 Stock Summaries (Restored) */}
+        
         <View style={styles.card}>
           <Text style={styles.sectionTitle}>Stock Summaries</Text>
           <View style={styles.stockRow}>
@@ -195,7 +211,12 @@ const chartData = {
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: '#f4f4f4' },
 
-  // 🔹 Sidebar Styles (Dark Theme)
+  row: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap:  60, // Adjust the spacing as needed
+    marginLeft: 50,
+  },
   sideMenu: {
     position: 'absolute',
     left: 0,
