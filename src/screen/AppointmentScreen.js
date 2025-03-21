@@ -1,24 +1,54 @@
-import React, { useState } from 'react';
+import React, { useState,useRef } from 'react';
 import {
   View,
   Text,
   FlatList,
   TextInput,
   TouchableOpacity,
-  ScrollView
+  ScrollView,
+  Dimensions,
+  Animated,
+  Image,
 } from 'react-native';
 import { Calendar } from 'react-native-calendars';
 import { LineChart } from 'react-native-chart-kit';
+import { useNavigation } from '@react-navigation/native';
 
+const screenWidth = Dimensions.get("window").width;
 const AppointmentsScreen = () => {
   const [selectedTab, setSelectedTab] = useState('Requests');
   const [selectedDate, setSelectedDate] = useState('');
-  
+  const navigation = useNavigation();
+   const [isMenuVisible, setIsMenuVisible] = useState(false);
+   const slideAnim = useRef(new Animated.Value(-250)).current; 
+
   const [requests, setRequests] = useState([
     { id: '1', name: 'Mark Dela Cruz', gender: 'Male', age: 28, service: 'Comprehensive Eye Exam', date: '2025-03-10', time: '10:30 AM', status: 'Pending' },
     { id: '2', name: 'Hanni Santos', gender: 'Female', age: 24, service: 'Contact Lens Fitting', date: '2025-03-05', time: '2:00 PM', status: 'Pending' },
     { id: '3', name: 'Peter Tan', gender: 'Male', age: 25, service: 'Follow Check-up', date: '2025-03-20', time: '4:00 PM', status: 'Pending' },
   ]);
+  const handleLogout = () => {
+      Alert.alert("Success", "Logout successfully!", [
+        { text: "OK", onPress: () => navigation.navigate("RegisterScreen") }
+      ]);
+    };
+  
+    const openMenu = () => {
+      setIsMenuVisible(true);
+      Animated.timing(slideAnim, {
+        toValue: 0,
+        duration: 300,
+        useNativeDriver: true,
+      }).start();
+    };
+  
+    const closeMenu = () => {
+      Animated.timing(slideAnim, {
+        toValue: -250,
+        duration: 300,
+        useNativeDriver: true,
+      }).start(() => setIsMenuVisible(false));
+    };
 
   const [appointments, setAppointments] = useState([]);
   const [markedDates, setMarkedDates] = useState({});
@@ -47,17 +77,56 @@ const AppointmentsScreen = () => {
   };
 
   return (
-    <View style={{ flex: 1, padding: 16, backgroundColor: '#F8F8F8' }}>
-      {/* Header */}
-      <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 20 }}>
-        <TouchableOpacity>
-          <Text style={{ fontSize: 30 }}>☰</Text>
-        </TouchableOpacity>
-        <Text style={{ fontSize: 22, fontWeight: 'bold', marginLeft: 10, color: 'red' }}>PEREZ OPTICAL</Text>
-        <TouchableOpacity style={{ marginLeft: 'auto' }}>
-          <Text style={{ fontSize: 30 }}>👤</Text>
-        </TouchableOpacity>
-      </View>
+    <View style={{ flex: 1,  backgroundColor: '#F8F8F8' }}>
+      
+                    {isMenuVisible && <TouchableOpacity style={styles.overlay} onPress={closeMenu} />}
+              
+                  
+                    <Animated.View style={[styles.sideMenu, { transform: [{ translateX: slideAnim }] }]}>
+                 
+                      <View style={styles.profileContainer}>
+                        <Image source={require('../assets/img/admin_profile.png')} style={styles.profileImage} />
+                        <Text style={styles.profileName}>John Perez</Text>
+                        <Text style={styles.profileRole}>Admin</Text>
+                      </View>
+              
+                      {/* 🔹 Menu Items */}
+                      <TouchableOpacity style={[styles.menuItem]} onPress ={() => navigation.navigate("Dashboard")}>
+                        <Text style={styles.menuText}>🏠 Dashboard</Text>
+                      </TouchableOpacity>
+                      <TouchableOpacity onPress={() => navigation.navigate("Inventory")} style={styles.menuItem}>
+                        <Text style={styles.menuText}>📦 Inventory</Text>
+                      </TouchableOpacity>
+                      <TouchableOpacity onPress={() => navigation.navigate("Orders")} style={[styles.menuItem]}>
+                        <Text style={styles.menuText}>🛒 Orders</Text>
+                      </TouchableOpacity >
+                      <TouchableOpacity onPress={() => navigation.navigate("Appointment")} style={[styles.menuItem, styles.activeMenuItem]}>
+                        <Text style={styles.menuText}>📅 Appointment</Text>
+                      </TouchableOpacity>
+              
+                      {/* 🔹 Bottom Section */}
+                      <View style={styles.bottomMenu}>
+                        <TouchableOpacity style={styles.menuItem}>
+                          <Text style={styles.menuText}>⚙️ Settings</Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity onPress={handleLogout} style={styles.menuItem}>
+                          <Text style={styles.menuText}>🚪 Log Out</Text>
+                        </TouchableOpacity>
+                      </View>
+                    </Animated.View>
+      <View style={styles.header}>
+                          <TouchableOpacity onPress={openMenu} style={{marginTop:20,}}>
+                            <Image source={require("../assets/img/menu.png")} style={styles.icon} />
+                          </TouchableOpacity>
+                          <Image source={require("../assets/img/logo.png")} style={styles.logo} />
+                         <View style={{flexDirection:'row',alignItems:'center',
+                         }}>
+                        <Text style={{fontSize:30,fontWeight:'bold',marginTop: 10,}}>Appointments</Text>
+                        <TouchableOpacity style={{marginLeft:130,marginTop: 10,}}>
+                            <Image source={require("../assets/img/admin_profile.png")} style={{width:40,height:40}} />
+                          </TouchableOpacity>
+                          </View>
+                        </View>
 
       {/* Stats Cards */}
       <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginBottom: 20 }}>
@@ -78,30 +147,31 @@ const AppointmentsScreen = () => {
 
       {selectedTab === 'Requests' ? (
         <ScrollView style={{ flex: 1 }} nestedScrollEnabled={true}>
-          {/* Appointment Requests */}
-          <FlatList
-             data={requests.filter((req) => req.status === 'Pending')}
-            keyExtractor={(item) => item.id}
-            ListHeaderComponent={<Text style={styles.sectionTitle}>Appointment Requests</Text>}
-            renderItem={({ item }) => (
-              <View style={styles.requestBox}>
-                <Text style={{ fontWeight: 'bold' }}>{item.name}</Text>
-                <Text>{item.gender}, {item.age}</Text>
-                <Text>{item.service}</Text>
-                <Text>{item.date}, {item.time}</Text>
-                <View style={{ flexDirection: 'row', marginTop: 10 }}>
-                  <TouchableOpacity style={styles.acceptButton} onPress={() => handleAccept(item)}>
-                    <Text style={{ color: 'white' }}>Accept</Text>
-                  </TouchableOpacity>
-                  <TouchableOpacity style={styles.declineButton} onPress={() => handleDecline(item)}>
-                    <Text style={{ color: 'white' }}>Decline</Text>
-                  </TouchableOpacity>
-                </View>
-              </View>
-            )}
-          />
+        
+        <FlatList
+        data={requests.filter((req) => req.status === 'Pending')}
+        keyExtractor={(item) => item.id}
+        ListHeaderComponent={<Text style={styles.sectionTitle}>Appointment Requests</Text>}
+        ListEmptyComponent={<Text style={{ textAlign: 'center', marginTop: 20, color: '#888' }}>No Appointment Requests Available</Text>}
+        renderItem={({ item }) => (
+          <View style={styles.requestBox}>
+            <Text style={{ fontWeight: 'bold' }}>{item.name}</Text>
+            <Text>{item.gender}, {item.age}</Text>
+            <Text>{item.service}</Text>
+            <Text>{item.date}, {item.time}</Text>
+            <View style={{ flexDirection: 'row', marginTop: 10 }}>
+              <TouchableOpacity style={styles.acceptButton} onPress={() => handleAccept(item)}>
+                <Text style={{ color: 'white' }}>Accept</Text>
+              </TouchableOpacity>
+              <TouchableOpacity style={styles.declineButton} onPress={() => handleDecline(item)}>
+                <Text style={{ color: 'white' }}>Decline</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        )}
+      />
 
-          {/* Calendar */}
+         
           <View style={{ backgroundColor: 'white', borderRadius: 10, padding: 10, marginTop: 20 }}>
             <Text style={styles.sectionTitle}>Appointment Calendar</Text>
             <Calendar onDayPress={(day) => setSelectedDate(day.dateString)} markedDates={markedDates} />
@@ -137,6 +207,44 @@ const AppointmentsScreen = () => {
               )}
             />
           </View>
+           {/* Line Chart */}
+           <View style={{ marginTop: 20, backgroundColor: 'white', padding: 16, borderRadius: 10, elevation: 3 }}>
+          <Text style={styles.sectionTitle}>Appointment Reports</Text>
+          <LineChart
+            data={{
+              labels: ["Sun", "Mon", "Tue", "Wed", "Thur", "Fri", "Sat"],
+              datasets: [
+                {
+                  data: [1000, 1500, 1200, 1400, 1300, 1250, 1800],
+                  color: () => "#4CAF50", // Green for completed
+                  strokeWidth: 2,
+                },
+                {
+                  data: [500, 700, 650, 800, 750, 900, 850],
+                  color: () => "#1976D2", // Blue for rescheduled
+                  strokeWidth: 2,
+                },
+                {
+                  data: [400, 600, 500, 950, 600, 580, 620],
+                  color: () => "#D32F2F", // Red for cancelled
+                  strokeWidth: 2,
+                },
+              ],
+            }}
+            width={screenWidth - 40}
+            height={220}
+            yAxisLabel=""
+            chartConfig={{
+              backgroundColor: "#fff",
+              backgroundGradientFrom: "#fff",
+              backgroundGradientTo: "#fff",
+              color: () => `#444`,
+              decimalPlaces: 0,
+            }}
+            bezier
+            style={styles.chart}
+          />
+        </View>
         </ScrollView>
       )}
     </View>
@@ -146,7 +254,7 @@ const AppointmentsScreen = () => {
 
 
 
-// Function to apply different colors based on status
+
 const getStatusStyle = (status) => ({
   backgroundColor:
     status === 'Confirmed' ? 'green' :
@@ -218,6 +326,83 @@ const styles = {
     Canceled: { backgroundColor: '#E74A3B' },
     Rescheduled: { backgroundColor: '#36A2EB' },
     Completed: { backgroundColor: '#6D36EB' },
+  },
+  logo:{
+    marginTop:20,
+    width: 250,
+    height: 40,
+    marginLeft: 20,
+    fontSize: 18,
+    fontWeight: "bold",
+    color: "#D21818",
+  },
+  overlay: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    zIndex: 9,
+  },
+
+  // 🔹 Profile Section
+  profileContainer: {
+    alignItems: 'center',
+    marginBottom: 20,
+  },
+  profileImage: {
+    width: 60,
+    height: 60,
+    borderRadius: 30,
+    marginBottom: 5,
+  },
+  profileName: {
+    color: '#fff',
+    fontSize: 16,
+    fontWeight: 'bold',
+  },
+  profileRole: {
+    color: '#bbb',
+    fontSize: 14,
+  },
+
+  // 🔹 Menu Items
+  menuItem: {
+    padding: 15,
+    borderBottomWidth: 1,
+    borderBottomColor: '#333',
+  },
+  menuText: {
+    fontSize: 16,
+    color: '#ddd',
+  },
+
+ 
+  activeMenuItem: {
+    backgroundColor: '#D24D57',
+  },
+  activeMenuText: {
+    fontSize: 16,
+    color: '#fff',
+    fontWeight: 'bold',
+  },
+  bottomMenu: {
+    position: 'absolute',
+    bottom: 20,
+    width: '100%',
+  },
+  header: { flexDirection: 'row',width:'100%',padding: 20,  backgroundColor: 'white', flexWrap:'wrap', },
+  sideMenu: {
+    position: 'absolute',
+    left: 0,
+    top: 0,
+    bottom: 0,
+    width: 250,
+    backgroundColor: '#1E1E1E', 
+    paddingTop: 50,
+    elevation: 10, 
+    zIndex: 10,
   },
 };
 

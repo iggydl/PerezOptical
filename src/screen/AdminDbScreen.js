@@ -16,7 +16,7 @@ const handleLogout = () => {
         ]);
   };
 
-  // Open Side Menu
+
   const openMenu = () => {
     setIsMenuVisible(true);
     Animated.timing(slideAnim, {
@@ -26,7 +26,6 @@ const handleLogout = () => {
     }).start();
   };
 
-  // Close Side Menu
   const closeMenu = () => {
     Animated.timing(slideAnim, {
       toValue: -250,
@@ -36,7 +35,7 @@ const handleLogout = () => {
   };
   const [selectedPeriod, setSelectedPeriod] = useState("daily");
 
-// Chart data for different timeframes
+
 const chartData = {
   daily: {
     labels: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
@@ -57,7 +56,7 @@ const chartData = {
 };
 
   return (
-    <View style={styles.container}>
+    <View style={{ flex: 1,  backgroundColor: '#F8F8F8' }}>
 
       {/* 🔹 Overlay when menu opens */}
       {isMenuVisible && <TouchableOpacity style={styles.overlay} onPress={closeMenu} />}
@@ -66,7 +65,7 @@ const chartData = {
       <Animated.View style={[styles.sideMenu, { transform: [{ translateX: slideAnim }] }]}>
         {/* 🔹 Profile Section */}
         <View style={styles.profileContainer}>
-          <Image source={require('../assets/img/profile.png')} style={styles.profileImage} />
+          <Image source={require('../assets/img/admin_profile.png')} style={styles.profileImage} />
           <Text style={styles.profileName}>John Perez</Text>
           <Text style={styles.profileRole}>Admin</Text>
         </View>
@@ -98,15 +97,21 @@ const chartData = {
 
       {/* 🔹 Main Dashboard Content */}
       <ScrollView style={styles.content}>
-        <View style={styles.header}>
-          <TouchableOpacity onPress={openMenu}>
-            <Image source={require('../assets/img/menu.png')} style={styles.icon} />
-          </TouchableOpacity>
-          <Text style={styles.title}>Dashboard</Text>
-          <TouchableOpacity>
-            <Image source={require('../assets/img/profile.png')} style={styles.icon} />
-          </TouchableOpacity>
-        </View>
+             
+                    <View style={styles.header}>
+                      <TouchableOpacity onPress={openMenu} style={{marginTop:20,}}>
+                        <Image source={require("../assets/img/menu.png")} style={styles.icon} />
+                      </TouchableOpacity>
+                      <Image source={require("../assets/img/logo.png")} style={styles.logo} />
+                     <View style={{flexDirection:'row',alignItems:'center',
+                     }}>
+                    <Text style={{fontSize:30,fontWeight:'bold',marginTop: 20,}}>Dashboard</Text>
+                    <TouchableOpacity style={{marginLeft:170,marginTop: 20,}}>
+                        <Image source={require("../assets/img/admin_profile.png")} style={{width:40,height:40}} />
+                      </TouchableOpacity>
+                      </View>
+                    </View>
+                   
 
         {/* 🔹 Sales Overview */}
         <View style={styles.card}>
@@ -238,7 +243,7 @@ const styles = StyleSheet.create({
     zIndex: 9,
   },
 
-  // 🔹 Profile Section
+ 
   profileContainer: {
     alignItems: 'center',
     marginBottom: 20,
@@ -259,7 +264,7 @@ const styles = StyleSheet.create({
     fontSize: 14,
   },
 
-  // 🔹 Menu Items
+ 
   menuItem: {
     padding: 15,
     borderBottomWidth: 1,
@@ -270,7 +275,7 @@ const styles = StyleSheet.create({
     color: '#ddd',
   },
 
-  // 🔹 Active Menu Item
+ 
   activeMenuItem: {
     backgroundColor: '#D24D57',
   },
@@ -280,7 +285,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
 
-  // 🔹 Bottom Menu Section
+
   bottomMenu: {
     position: 'absolute',
     bottom: 20,
@@ -309,10 +314,11 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
   },
 
-  // 🔹 Header
-  header: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', padding: 15, backgroundColor: '#D24D57' },
+  
+  header: { flexDirection: 'row',width:'100%',padding: 20,  backgroundColor: 'white', flexWrap:'wrap', },
   title: { fontSize: 22, fontWeight: 'bold', color: 'white' },
   icon: { width: 30, height: 30 },
+  logo: { width: 250, height: 35 ,marginTop:20,marginLeft:30},
 
   // 🔹 Card & Sections
   card: { backgroundColor: '#fff', padding: 15, borderRadius: 12, marginVertical: 10, marginHorizontal: 10 },

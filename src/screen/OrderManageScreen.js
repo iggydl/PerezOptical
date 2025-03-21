@@ -62,15 +62,15 @@ export default function OrdersScreen() {
   );
 
   return (
-    <View style={styles.container}>
-         {/* 🔹 Overlay when menu opens */}
+    <View style={{ flex: 1,  backgroundColor: '#F8F8F8' }}>
+       
               {isMenuVisible && <TouchableOpacity style={styles.overlay} onPress={closeMenu} />}
         
-              {/* 🔹 Side Navigation Menu */}
+            
               <Animated.View style={[styles.sideMenu, { transform: [{ translateX: slideAnim }] }]}>
-                {/* 🔹 Profile Section */}
+           
                 <View style={styles.profileContainer}>
-                  <Image source={require('../assets/img/profile.png')} style={styles.profileImage} />
+                  <Image source={require('../assets/img/admin_profile.png')} style={styles.profileImage} />
                   <Text style={styles.profileName}>John Perez</Text>
                   <Text style={styles.profileRole}>Admin</Text>
                 </View>
@@ -79,13 +79,13 @@ export default function OrdersScreen() {
                 <TouchableOpacity style={[styles.menuItem]} onPress ={() => navigation.navigate("Dashboard")}>
                   <Text style={styles.menuText}>🏠 Dashboard</Text>
                 </TouchableOpacity>
-                <TouchableOpacity onPress={() => navigation.navigate("Orders")} style={styles.menuItem}>
+                <TouchableOpacity onPress={() => navigation.navigate("Inventory")} style={styles.menuItem}>
                   <Text style={styles.menuText}>📦 Inventory</Text>
                 </TouchableOpacity>
                 <TouchableOpacity onPress={() => navigation.navigate("Orders")} style={[styles.menuItem, styles.activeMenuItem]}>
                   <Text style={styles.menuText}>🛒 Orders</Text>
                 </TouchableOpacity >
-                <TouchableOpacity style={styles.menuItem}>
+                <TouchableOpacity onPress={() => navigation.navigate("Appointment")} style={styles.menuItem}>
                   <Text style={styles.menuText}>📅 Appointment</Text>
                 </TouchableOpacity>
         
@@ -100,17 +100,21 @@ export default function OrdersScreen() {
                 </View>
               </Animated.View>
         
-      <View style={styles.header}>
-        <TouchableOpacity onPress={openMenu}>
-          <Image source={require("../assets/img/menu.png")} style={styles.icon} />
-        </TouchableOpacity>
-        <Text style={styles.logo}>PEREZ OPTICAL</Text>
-        <TouchableOpacity>
-          <Image source={require("../assets/img/profile.png")} style={styles.icon} />
-        </TouchableOpacity>
-      </View>
+       <View style={styles.header}>
+                    <TouchableOpacity onPress={openMenu} style={{marginTop:20,}}>
+                      <Image source={require("../assets/img/menu.png")} style={styles.icon} />
+                    </TouchableOpacity>
+                    <Image source={require("../assets/img/logo.png")} style={styles.logo} />
+                   <View style={{flexDirection:'row',alignItems:'center',
+                   }}>
+                  <Text style={{fontSize:30,fontWeight:'bold',marginTop: 10,}}>Orders</Text>
+                  <TouchableOpacity style={{marginLeft:225,marginTop: 10,}}>
+                      <Image source={require("../assets/img/admin_profile.png")} style={{width:40,height:40}} />
+                    </TouchableOpacity>
+                    </View>
+                  </View>
 
-      <Text style={styles.title}>Orders</Text>
+      
 
       <View style={styles.searchContainer}>
         <TouchableOpacity style={styles.sortButton} onPress={handleSort}>
@@ -211,12 +215,16 @@ const styles = StyleSheet.create({
     bottom: 20,
     width: '100%',
   },
-  header: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', padding: 15, backgroundColor: '#D24D57' },
+  header: { flexDirection: 'row',width:'100%',padding: 20,  backgroundColor: 'white', flexWrap:'wrap', },
   icon: {
     width: 30,
     height: 30,
   },
   logo: {
+    marginTop:20,
+    width: 250,
+    height: 40,
+    marginLeft: 20,
     fontSize: 18,
     fontWeight: "bold",
     color: "#D21818",

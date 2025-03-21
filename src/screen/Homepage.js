@@ -9,7 +9,7 @@ export default function HomepageScreen() {
   const products = [
     { id: "1", name: "Viseo VS220954", price: "₱139.00", image: require("../assets/img/glasses.jpg") },
     { id: "2", name: "Viseo VS320954", price: "₱179.00", image: require("../assets/img/glasses.jpg") },
-    { id: "3", name: "Viseo VS320954", price: "₱179.00", image: require("../assets/img/glasses.jpg") },
+   
   ];
 
   return (
@@ -178,11 +178,13 @@ const styles = StyleSheet.create({
   },
   productCard: {
     backgroundColor: "white",
+    width:150,
     height: 200,
     padding: 10,
     borderRadius: 10,
     alignItems: "center",
     marginRight: 15,
+    marginLeft: 15,
     borderWidth: 1,
     borderColor: "#ddd",
   },

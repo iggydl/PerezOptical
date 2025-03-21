@@ -1,7 +1,7 @@
 import { StyleSheet } from "react-native";
 
-export const styles = StyleSheet.create({
-  container: {
+export const editProfile = StyleSheet.create({
+  containers: {
     flex: 1,
     backgroundColor: 'white',
   },

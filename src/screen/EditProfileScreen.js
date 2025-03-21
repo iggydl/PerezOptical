@@ -2,7 +2,7 @@ import React, { useState, useContext,useEffect } from 'react';
 import { View, Text, TextInput, TouchableOpacity, Image, StyleSheet, Alert } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { UserContext } from './UserContext';
-import styles from '../styles/Editprofilestyle';
+import {editProfile} from '../styles/Editprofilestyle';
 
 export default function EditProfileScreen() {
   const navigation = useNavigation();
@@ -77,45 +77,46 @@ export default function EditProfileScreen() {
   };
 
   return (
-    <View style={styles.container}>
-      <View style={styles.header}>
+    <View style={{flex: 1,
+      backgroundColor: 'white',}}>
+      <View style={editProfile.header}>
         <TouchableOpacity onPress={() => navigation.goBack()}>
-          <Text style={styles.icon}>&#8592;</Text>
+          <Text style={editProfile.icon}>&#8592;</Text>
         </TouchableOpacity>
-        <Text style={styles.title}>Edit Profile</Text>
+        <Text style={editProfile.title}>Edit Profile</Text>
         <TouchableOpacity onPress={handleSave} disabled={!isChanged}>
-          <Text style={[styles.icon, { opacity: isChanged ? 1 : 0.5 }]}>&#10004;</Text>
+          <Text style={[editProfile.icon, { opacity: isChanged ? 1 : 0.5 }]}>&#10004;</Text>
         </TouchableOpacity>
       </View>
 
-      <View style={styles.profileSection}>
+      <View style={editProfile.profileSection}>
         <Image 
           source={{ uri: 'https://static-00.iconduck.com/assets.00/profile-circle-icon-1023x1024-ucnnjrj1.png' }} 
-          style={styles.profileImage} 
+          style={editProfile.profileImage} 
         />
       </View>
 
-      <View style={styles.form}>
-        <Text style={styles.label}>Name</Text>
+      <View style={editProfile.form}>
+        <Text style={editProfile.label}>Name</Text>
         <TextInput 
-          style={styles.input} 
+          style={editProfile.input} 
           value={name} 
           onChangeText={setName} 
           placeholder="Enter your name"
         />
 
-        <Text style={styles.label}>Email Address</Text>
+        <Text style={editProfile.label}>Email Address</Text>
         <TextInput 
-          style={styles.input} 
+          style={editProfile.input} 
           value={email} 
           onChangeText={setEmail} 
           placeholder="Enter your email"
           keyboardType="email-address"
         />
 
-        <Text style={styles.label}>Password</Text>
+        <Text style={editProfile.label}>Password</Text>
         <TextInput 
-          style={styles.input} 
+          style={editProfile.input} 
           value={password} 
           onChangeText={(text) => {
             setPassword(text);
@@ -127,9 +128,9 @@ export default function EditProfileScreen() {
 
         {showConfirmPassword && (
           <>
-            <Text style={styles.label}>Confirm Password</Text>
+            <Text style={editProfile.label}>Confirm Password</Text>
             <TextInput 
-              style={styles.input} 
+              style={editProfile.input} 
               value={confirmPassword} 
               onChangeText={setConfirmPassword} 
               placeholder="Re-enter password"
