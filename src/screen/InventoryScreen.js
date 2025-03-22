@@ -35,8 +35,24 @@ const InventoryScreen = () => {
     ]);
   };
   const handleAddProduct = () => {
-    if (!newProduct.name || !newProduct.category || !newProduct.quantity || !newProduct.price) {
+    if (!newProduct.name && !newProduct.category && !newProduct.quantity && !newProduct.price) {
       Alert.alert('Error', 'Please fill in all fields');
+      return;
+    }
+    else if (!newProduct.name){
+      Alert.alert('Error', 'Please input the  product name');
+      return;
+    }
+    else if (!newProduct.category){
+      Alert.alert('Error', 'Please choose the product category');
+      return;
+    }
+    else if (!newProduct.quantity){
+      Alert.alert('Error', 'Please input the product quantity');
+      return;
+    }
+    else if (!newProduct.price){
+      Alert.alert('Error', 'Please input the product price');
       return;
     }
 
@@ -64,11 +80,12 @@ const InventoryScreen = () => {
       category: '',
       quantity: '',
       price: '',
+      date: '', 
     });
     setIsEditModalVisible(true);
   };
 
-  // Function to handle updating a product
+ 
   const handleUpdateProduct = (updatedProduct) => {
     const updatedProducts = products.map((item) =>
       item.id === updatedProduct.id ? { ...updatedProduct, quantity: parseInt(updatedProduct.quantity, 10) } : item
@@ -121,16 +138,16 @@ const InventoryScreen = () => {
     );
   };
   const [products, setProducts] = useState([
-    { id: '1', name: 'Pat Black', category: 'Eyewear', quantity: 25, price: '450', date: '2024-03-20' },
-    { id: '2', name: 'Angel Jones', category: 'Lenses', quantity: 66, price: '325', date: '2024-03-19' },
-    { id: '3', name: 'Max Edwards', category: 'Accessories', quantity: 3, price: '25', date: '2024-03-18' },
-    { id: '4', name: 'Bruce Fox', category: 'Sunglasses', quantity: 120, price: '1500', date: '2024-03-17' },
-    { id: '5', name: 'Devon Fisher', category: 'Frames', quantity: 15, price: '999', date: '2024-03-16' },
-    { id: '6', name: 'Pat Black', category: 'Eyewear', quantity: 25, price: '450', date: '2024-03-20' },
-    { id: '7', name: 'Angel Jones', category: 'Lenses', quantity: 66, price: '325', date: '2024-03-19' },
-    { id: '8', name: 'Max Edwards', category: 'Accessories', quantity: 3, price: '25', date: '2024-03-18' },
-    { id: '9', name: 'Bruce Fox', category: 'Sunglasses', quantity: 120, price: '1500', date: '2024-03-17' },
-    { id: '10', name: 'Devon Fisher', category: 'Frames', quantity: 15, price: '999', date: '2024-03-16' },
+    { id: '1', name: 'Ray-Ban Aviator', category: 'Eyeglasses', quantity: 25, price: '450', date: '2024-03-20' },
+    { id: '2', name: 'Oakley Holbrook', category: 'Sunglasses', quantity: 66, price: '325', date: '2024-03-19' },
+    { id: '3', name: 'Foster Grant Readers', category: 'Reading Glasses', quantity: 3, price: '25', date: '2024-03-18' },
+    { id: '4', name: 'Acuvue Oasys', category: 'Contact Lens & Solution', quantity: 120, price: '1500', date: '2024-03-17' },
+    { id: '5', name: 'Microfiber Cleaning Cloth', category: 'Accessories', quantity: 15, price: '999', date: '2024-03-16' },
+    { id: '6', name: 'Warby Parker Haskell', category: 'Eyeglasses', quantity: 25, price: '450', date: '2024-03-20' },
+    { id: '7', name: 'Maui Jim Peahi', category: 'Sunglasses', quantity: 66, price: '325', date: '2024-03-19' },
+    { id: '8', name: 'Magnivision Readers', category: 'Reading Glasses', quantity: 3, price: '25', date: '2024-03-18' },
+    { id: '9', name: 'Dailies AquaComfort Plus', category: 'Contact Lens & Solution', quantity: 120, price: '1500', date: '2024-03-17' },
+    { id: '10', name: 'Eyeglass Repair Kit', category: 'Accessories', quantity: 15, price: '999', date: '2024-03-16' },
   ]);
 
   const getAvailability = (quantity) => {
@@ -163,7 +180,7 @@ const InventoryScreen = () => {
     <EditProductModal
      isVisible={isEditModalVisible}
       onClose={() => setIsEditModalVisible(false)}
-      product={editingProduct} // Ensure this is not null
+      product={editingProduct} 
       onSave={handleUpdateProduct}
       categories={categories}
     />
@@ -194,7 +211,7 @@ const InventoryScreen = () => {
               </View>
             ))}
 
-            {/* Quantity Input */}
+            
             <TextInput
               style={styles.input}
               placeholder="Quantity"
@@ -207,7 +224,7 @@ const InventoryScreen = () => {
               }}
             />
 
-            {/* Price Input */}
+          
             <TextInput
               style={styles.input}
               placeholder="Price"
@@ -220,7 +237,7 @@ const InventoryScreen = () => {
               }}
             />
 
-            {/* Buttons */}
+            
             <View style={styles.modalButtons}>
               <TouchableOpacity style={styles.cancelButton} onPress={() => setIsAddModalVisible(false)}>
                 <Text style={styles.buttonText}>Cancel</Text>

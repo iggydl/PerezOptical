@@ -9,22 +9,60 @@ import {
   StyleSheet,
   Animated,
   Alert,
+  Modal,
 } from "react-native";
 import { useNavigation } from '@react-navigation/native';
+import { Picker } from '@react-native-picker/picker';
 
 export default function OrdersScreen() {
   const [isMenuVisible, setIsMenuVisible] = useState(false);
-  const slideAnim = useRef(new Animated.Value(-250)).current; 
+  const slideAnim = useRef(new Animated.Value(-250)).current;
   const navigation = useNavigation();
   const [searchQuery, setSearchQuery] = useState("");
   const [sortOrder, setSortOrder] = useState("asc");
-  
-  const [orders, setOrders] = useState(Array.from({ length: 20 }, (_, i) => ({
-    date: `2024-0${(i % 9) + 1}-0${(i % 9) + 1}`,
-    quantity: (i % 5) + 1,
-    total: `${(i + 1) * 1500}`,
-    status: ["Completed", "Pending", "Shipped", "Processing"][i % 4]
-  })));
+
+  const getRandomName = () => {
+    const firstNames = ["John", "Jane", "Michael", "Sarah", "David", "Emily", "Robert", "Emma", "Chris", "Olivia"];
+    const lastNames = ["Smith", "Johnson", "Brown", "Davis", "Miller", "Wilson", "Moore", "Taylor", "Anderson", "Thomas"];
+    const randomFirstName = firstNames[Math.floor(Math.random() * firstNames.length)];
+    const randomLastName = lastNames[Math.floor(Math.random() * lastNames.length)];
+    return `${randomFirstName} ${randomLastName}`;
+  };
+
+  const [orders, setOrders] = useState(
+    Array.from({ length: 20 }, (_, i) => ({
+      id: i + 1,
+      date: `2024-0${(i % 9) + 1}-0${(i % 9) + 1}`,
+      quantity: (i % 5) + 1,
+      total: `${(i + 1) * 1500}`,
+      status: ["Completed", "Pending", "Shipped", "Processing"][i % 4],
+      name: getRandomName(),
+      address: `123 Street, City ${i + 1}`,
+      paymentMethod: i % 2 === 0 ? "Credit Card" : "Cash on Delivery",
+    }))
+  );
+
+  const [modalVisible, setModalVisible] = useState(false);
+  const [selectedOrder, setSelectedOrder] = useState(null);
+
+  const openModal = (order) => {
+    setSelectedOrder(order);
+    setModalVisible(true);
+  };
+
+  const closeModal = () => {
+    setModalVisible(false);
+    setSelectedOrder(null);
+  };
+
+  const handleStatusChange = (newStatus) => {
+    setOrders((prevOrders) =>
+      prevOrders.map((order) =>
+        order.id === selectedOrder.id ? { ...order, status: newStatus } : order
+      )
+    );
+    setSelectedOrder({ ...selectedOrder, status: newStatus });
+  };
 
   const handleLogout = () => {
     Alert.alert("Success", "Logout successfully!", [
@@ -57,107 +95,256 @@ export default function OrdersScreen() {
     setSortOrder(sortOrder === "asc" ? "desc" : "asc");
   };
 
-  const filteredOrders = orders.filter(order => 
+  const filteredOrders = orders.filter(order =>
     order.total.includes(searchQuery) || order.status.toLowerCase().includes(searchQuery.toLowerCase()) || order.quantity.toString().includes(searchQuery)
   );
 
+
+  const totalOrders = orders.length;
+  const ShipOrders = orders.filter(order => order.status === "Shipped").length;
+  const pendingOrders = orders.filter(order => order.status === "Pending").length;
+  const deliveredOrders = orders.filter(order => order.status === "Delivered").length;
+  const cancelledOrders = orders.filter(order => order.status === "Cancelled").length;
+
   return (
-    <View style={{ flex: 1,  backgroundColor: '#F8F8F8' }}>
-       
-              {isMenuVisible && <TouchableOpacity style={styles.overlay} onPress={closeMenu} />}
-        
-            
-              <Animated.View style={[styles.sideMenu, { transform: [{ translateX: slideAnim }] }]}>
-           
-                <View style={styles.profileContainer}>
-                  <Image source={require('../assets/img/admin_profile.png')} style={styles.profileImage} />
-                  <Text style={styles.profileName}>John Perez</Text>
-                  <Text style={styles.profileRole}>Admin</Text>
-                </View>
-        
-                {/* 🔹 Menu Items */}
-                <TouchableOpacity style={[styles.menuItem]} onPress ={() => navigation.navigate("Dashboard")}>
-                  <Text style={styles.menuText}>🏠 Dashboard</Text>
-                </TouchableOpacity>
-                <TouchableOpacity onPress={() => navigation.navigate("Inventory")} style={styles.menuItem}>
-                  <Text style={styles.menuText}>📦 Inventory</Text>
-                </TouchableOpacity>
-                <TouchableOpacity onPress={() => navigation.navigate("Orders")} style={[styles.menuItem, styles.activeMenuItem]}>
-                  <Text style={styles.menuText}>🛒 Orders</Text>
-                </TouchableOpacity >
-                <TouchableOpacity onPress={() => navigation.navigate("Appointment")} style={styles.menuItem}>
-                  <Text style={styles.menuText}>📅 Appointment</Text>
-                </TouchableOpacity>
-        
-                {/* 🔹 Bottom Section */}
-                <View style={styles.bottomMenu}>
-                  <TouchableOpacity style={styles.menuItem}>
-                    <Text style={styles.menuText}>⚙️ Settings</Text>
-                  </TouchableOpacity>
-                  <TouchableOpacity onPress={handleLogout} style={styles.menuItem}>
-                    <Text style={styles.menuText}>🚪 Log Out</Text>
-                  </TouchableOpacity>
-                </View>
-              </Animated.View>
-        
-       <View style={styles.header}>
-                    <TouchableOpacity onPress={openMenu} style={{marginTop:20,}}>
-                      <Image source={require("../assets/img/menu.png")} style={styles.icon} />
-                    </TouchableOpacity>
-                    <Image source={require("../assets/img/logo.png")} style={styles.logo} />
-                   <View style={{flexDirection:'row',alignItems:'center',
-                   }}>
-                  <Text style={{fontSize:30,fontWeight:'bold',marginTop: 10,}}>Orders</Text>
-                  <TouchableOpacity style={{marginLeft:225,marginTop: 10,}}>
-                      <Image source={require("../assets/img/admin_profile.png")} style={{width:40,height:40}} />
-                    </TouchableOpacity>
-                    </View>
-                  </View>
+    <View style={{ flex: 1, backgroundColor: '#F8F8F8' }}>
+      {isMenuVisible && <TouchableOpacity style={styles.overlay} onPress={closeMenu} />}
 
-      
+      <Animated.View style={[styles.sideMenu, { transform: [{ translateX: slideAnim }] }]}>
+        <View style={styles.profileContainer}>
+          <Image source={require('../assets/img/admin_profile.png')} style={styles.profileImage} />
+          <Text style={styles.profileName}>John Perez</Text>
+          <Text style={styles.profileRole}>Admin</Text>
+        </View>
 
-      <View style={styles.searchContainer}>
-        <TouchableOpacity style={styles.sortButton} onPress={handleSort}>
-          <Text style={styles.sortText}>Sort</Text>
+        {/* 🔹 Menu Items */}
+        <TouchableOpacity style={[styles.menuItem]} onPress={() => navigation.navigate("Dashboard")}>
+          <Text style={styles.menuText}>🏠 Dashboard</Text>
         </TouchableOpacity>
+        <TouchableOpacity onPress={() => navigation.navigate("Inventory")} style={styles.menuItem}>
+          <Text style={styles.menuText}>📦 Inventory</Text>
+        </TouchableOpacity>
+        <TouchableOpacity onPress={() => navigation.navigate("Orders")} style={[styles.menuItem, styles.activeMenuItem]}>
+          <Text style={styles.menuText}>🛒 Orders</Text>
+        </TouchableOpacity>
+        <TouchableOpacity onPress={() => navigation.navigate("Appointment")} style={styles.menuItem}>
+          <Text style={styles.menuText}>📅 Appointment</Text>
+        </TouchableOpacity>
+
+        {/* 🔹 Bottom Section */}
+        <View style={styles.bottomMenu}>
+          <TouchableOpacity style={styles.menuItem}>
+            <Text style={styles.menuText}>⚙️ Settings</Text>
+          </TouchableOpacity>
+          <TouchableOpacity onPress={handleLogout} style={styles.menuItem}>
+            <Text style={styles.menuText}>🚪 Log Out</Text>
+          </TouchableOpacity>
+        </View>
+      </Animated.View>
+
+      <View style={styles.header}>
+        <TouchableOpacity onPress={openMenu} style={{ marginTop: 20 }}>
+          <Image source={require("../assets/img/menu.png")} style={styles.icon} />
+        </TouchableOpacity>
+        <Image source={require("../assets/img/logo.png")} style={styles.logo} />
+        <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+          <Text style={{ fontSize: 30, fontWeight: 'bold', marginTop: 10 }}>Orders</Text>
+          <TouchableOpacity style={{ marginLeft: 225, marginTop: 10 }}>
+            <Image source={require("../assets/img/admin_profile.png")} style={{ width: 40, height: 40 }} />
+          </TouchableOpacity>
+        </View>
+      </View>
+
+      {/* 🔹 Total Orders Summary */}
+      <View style={styles.summaryContainer}>
+        <View style={styles.summaryCard}>
+         <Image source={require('../assets/img/totalproduct.png')}  />
+          <Text style={styles.summaryTitle}>Total Orders</Text>
+          <Text style={styles.summaryValue}>{totalOrders}</Text>
+        </View>
+        <View style={styles.summaryCard}>
+         <Image source={require('../assets/img/pending.png')}  />
+          <Text style={styles.summaryTitle}>Pending</Text>
+          <Text style={styles.summaryValue}>{pendingOrders}</Text>
+        </View>
+        <View style={styles.summaryCard}>
+           <Image source={require('../assets/img/shipped.png')}  />
+          <Text style={styles.summaryTitle}>Shipped</Text>
+          <Text style={styles.summaryValue}>{ShipOrders}</Text>
+        </View>
+        <View style={styles.summaryCard}>
+        <Image source={require('../assets/img/delivery.png')} />
+          <Text style={styles.summaryTitle}>Delivered</Text>
+          <Text style={styles.summaryValue}>{deliveredOrders}</Text>
+        </View>
+        <View style={styles.summaryCard}>
+           <Image source={require('../assets/img/cancelledd.png')}  />
+          <Text style={styles.summaryTitle}>Cancelled</Text>
+          <Text style={styles.summaryValue}>{cancelledOrders}</Text>
+        </View>
+      </View>
+
+      {/* 🔹 Order List */}
+      <View style={{ backgroundColor: 'white', borderRadius: 10, padding: 10 }}>
+        <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+          <Text style={{ fontSize: 18, fontWeight: 'bold' }}>Order List</Text>
+          <TouchableOpacity style={styles.sortButton} onPress={handleSort}>
+            <Text style={styles.sortText}>Sort</Text>
+          </TouchableOpacity>
+        </View>
+
         <TextInput
           style={styles.searchInput}
           placeholder="Search by Price, Status, or Quantity"
           value={searchQuery}
           onChangeText={setSearchQuery}
         />
+
+        <ScrollView style={styles.orderList}>
+          <View style={styles.tableHeader}>
+            <Text style={[styles.cell, styles.columnDate]}>Created</Text>
+            <Text style={[styles.cell, styles.columnQuantity]}>Qty</Text>
+            <Text style={[styles.cell, styles.columnTotal]}>Total</Text>
+            <Text style={[styles.cell, styles.columnStatus]}>Status</Text>
+            <Text style={[styles.cell, styles.columnActions]}>Actions</Text>
+          </View>
+
+          {filteredOrders.map((order, index) => (
+            <View key={index} style={styles.orderRow}>
+              <Text style={[styles.cell, styles.columnDate]}>{order.date}</Text>
+              <Text style={[styles.cell, styles.columnQuantity]}>{order.quantity}</Text>
+              <Text style={[styles.cell, styles.columnTotal]}>₱ {order.total}</Text>
+              <Text style={[styles.cell, styles.columnStatus]}>{order.status}</Text>
+              <TouchableOpacity style={[styles.columnActions]} onPress={() => openModal(order)}>
+                <Image source={require("../assets/img/editproduct.png")} style={styles.eyeIcon} />
+              </TouchableOpacity>
+            </View>
+          ))}
+        </ScrollView>
       </View>
 
-      <ScrollView style={styles.orderList}>
-        <View style={styles.tableHeader}>
-          <Text style={[styles.tableHeaderText, styles.columnDate]}>Created</Text>
-          <Text style={[styles.tableHeaderText, styles.columnQuantity]}>Qty</Text>
-          <Text style={[styles.tableHeaderText, styles.columnTotal]}>Total</Text>
-          <Text style={[styles.tableHeaderText, styles.columnStatus]}>Status</Text>
-          <Text style={[styles.tableHeaderText, styles.columnActions]}>Actions</Text>
-        </View>
-
-        {filteredOrders.map((order, index) => (
-          <View key={index} style={styles.orderRow}>
-            <Text style={[styles.orderText, styles.columnDate]}>{order.date}</Text>
-            <Text style={[styles.orderText, styles.columnQuantity]}>{order.quantity}</Text>
-            <Text style={[styles.orderText, styles.columnTotal]}>₱ {order.total}</Text>
-            <Text style={[styles.orderText, styles.columnStatus]}>{order.status}</Text>
-            <TouchableOpacity style={[ styles.columnStatus]}>
-              <Image source={require("../assets/img/openeye.png")} style={styles.eyeIcon} />
-            </TouchableOpacity>
-          </View>
-        ))}
-      </ScrollView>
+    
+      <Modal visible={modalVisible} animationType="slide" transparent={true}>
+  <View style={styles.modalContainer}>
+    <View style={styles.modalContent}>
+      <Text style={styles.modalTitle}>Order Details</Text>
+      {selectedOrder && (
+        <>
+          <Text>Name: {selectedOrder.name}</Text>
+          <Text>Address: {selectedOrder.address}</Text>
+          <Text>Payment Method: {selectedOrder.paymentMethod}</Text>
+          <Text>Total: ₱ {selectedOrder.total}</Text>
+          <Text>Status:</Text>
+          <Picker
+            selectedValue={selectedOrder.status}
+            onValueChange={(newStatus) => {
+          
+              setSelectedOrder({ ...selectedOrder, status: newStatus });
+            }}
+          >
+            <Picker.Item label="Pending" value="Pending" />
+            <Picker.Item label="Shipped" value="Shipped" />
+            <Picker.Item label="Processing" value="Processing" />
+            <Picker.Item label="Delivered" value="Delivered" />
+            <Picker.Item label="Cancelled" value="Cancelled" />
+          </Picker>
+          <TouchableOpacity
+            style={styles.confirmButton}
+            onPress={() => {
+            
+              if (selectedOrder.status === orders.find(order => order.id === selectedOrder.id)?.status) {
+              
+                closeModal();
+              } else {
+              
+                Alert.alert(
+                  "Update Status",
+                  "Are you sure you want to update the status?",
+                  [
+                    {
+                      text: "Cancel",
+                      style: "cancel",
+                    },
+                    {
+                      text: "Confirm",
+                      onPress: () => {
+                  
+                        handleStatusChange(selectedOrder.status); 
+                        closeModal();
+                        Alert.alert("Success", "Order status updated successfully!");
+                      },
+                    },
+                  ]
+                );
+              }
+            }}
+          >
+            <Text style={styles.closeText}>Confirm</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.closeButton} onPress={closeModal}>
+            <Text style={styles.closeText}>Close</Text>
+          </TouchableOpacity>
+        </>
+      )}
+    </View>
+  </View>
+</Modal>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
+  modalContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "rgba(0, 0, 0, 0.5)",
+  },
+  modalContent: {
+    backgroundColor: "#fff",
+    padding: 20,
+    borderRadius: 10,
+    width: "80%",
+  },
+  modalTitle: {
+    fontSize: 18,
+    fontWeight: "bold",
+    marginBottom: 10,
+  },
+  closeButton: {
+    marginTop: 10,
+    backgroundColor: "#D24D57",
+    padding: 10,
+    borderRadius: 5,
+    alignItems: "center",
+  },
+  confirmButton: {
+    marginTop: 10,
+    backgroundColor: "green",
+    padding: 10,
+    borderRadius: 5,
+    alignItems: "center",
+  },
+  closeText: {
+    color: "#fff",
+    fontWeight: "bold",
+  },
   container: {
     flex: 1,
     backgroundColor: "#FFFFFF",
-    
+  },
+  orderRow: {
+    flexDirection: 'row',
+    paddingVertical: 8,
+    borderBottomWidth: 1,
+    borderBottomColor: '#ddd',
+    alignItems: 'center',
+  },
+  sortButton: {
+    backgroundColor: 'red',
+    paddingVertical: 5,
+    paddingHorizontal: 25,
+    borderRadius: 5,
   },
   overlay: {
     position: 'absolute',
@@ -168,8 +355,6 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(0, 0, 0, 0.5)',
     zIndex: 9,
   },
-
-  // 🔹 Profile Section
   profileContainer: {
     alignItems: 'center',
     marginBottom: 20,
@@ -189,8 +374,10 @@ const styles = StyleSheet.create({
     color: '#bbb',
     fontSize: 14,
   },
-
-  // 🔹 Menu Items
+  cell: {
+    flex: 1,
+    fontSize: 11,
+  },
   menuItem: {
     padding: 15,
     borderBottomWidth: 1,
@@ -200,8 +387,6 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: '#ddd',
   },
-
-  // 🔹 Active Menu Item
   activeMenuItem: {
     backgroundColor: '#D24D57',
   },
@@ -215,13 +400,19 @@ const styles = StyleSheet.create({
     bottom: 20,
     width: '100%',
   },
-  header: { flexDirection: 'row',width:'100%',padding: 20,  backgroundColor: 'white', flexWrap:'wrap', },
+  header: {
+    flexDirection: 'row',
+    width: '100%',
+    padding: 20,
+    backgroundColor: 'white',
+    flexWrap: 'wrap',
+  },
   icon: {
     width: 30,
     height: 30,
   },
   logo: {
-    marginTop:20,
+    marginTop: 20,
     width: 250,
     height: 40,
     marginLeft: 20,
@@ -238,89 +429,63 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     marginTop: 15,
+    marginBottom:15,
+    paddingHorizontal: 10,
   },
   summaryCard: {
     flex: 1,
     backgroundColor: "#fff",
-    padding: 15,
+    padding: 5,
     marginHorizontal: 5,
     borderRadius: 10,
     alignItems: "center",
-    elevation: 3,
-  },
-  searchContainer: {
-    flexDirection: "row",
-    alignItems: "center",
-    marginVertical: 15,
-    paddingHorizontal: 15,
-    paddingTop: 20,
-  },
-  sortButton: {
-    backgroundColor: "#D21818",
-    padding: 10,
-    borderRadius: 5,
-    marginRight: 10,
-  },
-  searchInput: {
-    flex: 1,
-    backgroundColor: "#fff",
-    padding: 10,
-    borderRadius: 5,
     elevation: 2,
   },
-  orderList: {
-    backgroundColor: "#fff",
-    borderRadius: 10,
-    padding: 10,
-    paddingHorizontal: 15,
-    paddingTop: 20,
+  summaryTitle: {
+    fontSize: 10,
+    fontWeight:'bold',
+    color: '#666',
+    marginBottom: 5,
   },
-  tableHeader: {
-    flexDirection: "row",
-    borderBottomWidth: 1,
-    paddingBottom: 10,
-    fontWeight: "bold",
-    textAlign: "center",
-    
-  },
-  tableHeaderText: {
-    fontWeight: "bold",
-    textAlign: "left",
-  },
-  orderRow: {
-    flexDirection: "row",
-    alignItems: "center",
-    paddingVertical: 10,
-    borderBottomWidth: 1,
-    borderBottomColor: "#ddd",
-  },
-  orderText: {
-    textAlign: "center",
-    paddingHorizontal: 10,
-    flexWrap: "wrap",
+  summaryValue: {
+    fontSize: 18,
+    fontWeight: 'bold',
   },
   eyeIcon: {
     width: 25,
     height: 25,
-    tintColor: "#6113BC",
-    marginLeft: 5,
+    tintColor: "#D24D57",
   },
- 
-  columnDate: { flex: 2 , alignItems: "center"},
- 
+  columnDate: { flex: 2, alignItems: "center" },
   columnQuantity: { flex: 2, alignItems: "center" },
-  columnTotal: { flex: 2 , alignItems: "center"},
-  columnStatus: { flex: 2 , alignItems: "center"},
-  columnActions: { flex: 2, alignItems: "center" },
+  columnTotal: { flex: 2, alignItems: "center" },
+  columnStatus: { flex: 2, alignItems: "center" },
+  columnActions: { flex: 1, alignItems: "center" },
   sideMenu: {
     position: 'absolute',
     left: 0,
     top: 0,
     bottom: 0,
     width: 250,
-    backgroundColor: '#1E1E1E', 
+    backgroundColor: '#1E1E1E',
     paddingTop: 50,
-    elevation: 10, 
+    elevation: 10,
     zIndex: 10,
+  },
+  tableHeader: {
+    flexDirection: 'row',
+    backgroundColor: '#f0f0f0',
+    paddingVertical: 8,
+    paddingHorizontal: 5,
+  },
+  row: {
+    flexDirection: 'row',
+    paddingVertical: 8,
+    borderBottomWidth: 1,
+    borderBottomColor: '#ddd',
+    alignItems: 'center',
+  },
+  searchInput: {
+    width: '100%',
   },
 });

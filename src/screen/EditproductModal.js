@@ -15,9 +15,14 @@ const EditProductModal = ({ isVisible, onClose, product, onSave, categories }) =
 
   useEffect(() => {
     if (product) {
-      setEditedProduct(product);
+      setEditedProduct({
+        id: product.id || '',
+        name: product.name || '',
+        category: product.category || '', 
+        quantity: product.quantity ? product.quantity.toString() : '',
+        price: product.price ? product.price.toString() : '',
+      });
     } else {
-  
       setEditedProduct({
         id: '',
         name: '',
@@ -29,14 +34,32 @@ const EditProductModal = ({ isVisible, onClose, product, onSave, categories }) =
   }, [product]);
 
   const handleSave = () => {
-    if (!editedProduct.name || !editedProduct.category || !editedProduct.quantity || !editedProduct.price) {
+    if (!editedProduct.name && !editedProduct.category && !editedProduct.quantity && !editedProduct.price) {
       Alert.alert('Error', 'Please fill in all fields');
       return;
     }
+    
+        else if (!editedProduct.name){
+          Alert.alert('Error', 'Please input the  product name');
+          return;
+        }
+        else if (!editedProduct.category){
+          Alert.alert('Error', 'Please choose the product category');
+          return;
+        }
+        else if (!editedProduct.quantity){
+          Alert.alert('Error', 'Please input the product quantity');
+          return;
+        }
+        else if (!editedProduct.price){
+          Alert.alert('Error', 'Please input the product price');
+          return;
+        }
 
-  
+    else {
     onSave(editedProduct);
-    onClose(); 
+    onClose();
+    } 
   };
 
   return (
@@ -54,17 +77,18 @@ const EditProductModal = ({ isVisible, onClose, product, onSave, categories }) =
           />
 
     
-          <Text style={styles.label}>Category</Text>
-          {categories.map((category, index) => (
-            <View key={index} style={styles.radioButtonContainer}>
-              <RadioButton
-                value={category}
-                status={editedProduct.category === category ? 'checked' : 'unchecked'}
-                onPress={() => setEditedProduct({ ...editedProduct, category })}
-              />
-              <Text style={styles.radioButtonLabel}>{category}</Text>
-            </View>
-          ))}
+<Text style={styles.label}>Category</Text>
+          <RadioButton.Group
+            onValueChange={(value) => setEditedProduct({ ...editedProduct, category: value })}
+            value={editedProduct.category}
+          >
+            {categories.map((category, index) => (
+              <View key={index} style={styles.radioButtonContainer}>
+                <RadioButton value={category} />
+                <Text style={styles.radioButtonLabel}>{category}</Text>
+              </View>
+            ))}
+          </RadioButton.Group>
 
     
           <TextInput
