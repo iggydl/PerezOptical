@@ -38,30 +38,51 @@ const EditProductModal = ({ isVisible, onClose, product, onSave, categories }) =
       Alert.alert('Error', 'Please fill in all fields');
       return;
     }
-    
-        else if (!editedProduct.name){
-          Alert.alert('Error', 'Please input the  product name');
-          return;
-        }
-        else if (!editedProduct.category){
-          Alert.alert('Error', 'Please choose the product category');
-          return;
-        }
-        else if (!editedProduct.quantity){
-          Alert.alert('Error', 'Please input the product quantity');
-          return;
-        }
-        else if (!editedProduct.price){
-          Alert.alert('Error', 'Please input the product price');
-          return;
-        }
+    else if (!editedProduct.name) {
+      Alert.alert('Error', 'Please input the product name');
+      return;
+    } else if (!editedProduct.category) {
+      Alert.alert('Error', 'Please choose the product category');
+      return;
+    } else if (!editedProduct.quantity) {
+      Alert.alert('Error', 'Please input the product quantity');
+      return;
+    } else if (!editedProduct.price) {
+      Alert.alert('Error', 'Please input the product price');
+      return;
+    }
 
-    else {
-    onSave(editedProduct);
-    onClose();
-    } 
+   
+    const hasChanges =
+      editedProduct.name !== product.name ||
+      editedProduct.category !== product.category ||
+      editedProduct.quantity !== product.quantity.toString() ||
+      editedProduct.price !== product.price.toString();
+
+    if (hasChanges) {
+      Alert.alert(
+        'Confirm Changes',
+        'Are you sure you want to save these changes?',
+        [
+          {
+            text: 'Cancel',
+            style: 'cancel',
+          },
+          {
+            text: 'Save',
+            onPress: () => {
+              onSave(editedProduct); 
+              onClose(); 
+            },
+          },
+        ],
+        { cancelable: true }
+      );
+    } else {
+  
+      onClose();
+    }
   };
-
   return (
     <Modal visible={isVisible} animationType="slide" transparent={true}>
       <View style={styles.modalContainer}>
